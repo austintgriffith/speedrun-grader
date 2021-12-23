@@ -43,7 +43,7 @@ if(fs.existsSync('server.key')&&fs.existsSync('server.cert')){
     key: fs.readFileSync('server.key'),
     cert: fs.readFileSync('server.cert')
   }, app).listen(54727, () => {
-    console.log('HTTPS Listening: 49832')
+    console.log('HTTPS Listening: 54727')
   })
 }else{
   var server = app.listen(54727, function () {
