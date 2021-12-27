@@ -43,10 +43,16 @@ const testChallenge = async ({ challenge, network, address }) => {
   return result;
 }
 
+app.get("/", async function(req, res) {
+  res.status(200).send('HELLO WORLD!')
+});
+
+
 app.get("/address", async function(req, res) {
   const { stdout, stderr } = await exec('cd '+challenges[0].name+' && yarn account');
   console.log(`stdout: ${stdout}`);
   console.log(`stderr: ${stderr}`);
+  res.status(200).send(stdout)
 });
 
 // For testing purposes.
@@ -63,6 +69,28 @@ app.get("/:challenge/:network/:address", async function(req, res) {
 
       console.log("result", JSON.stringify(result));
       return res.json(result);
+    } else {
+      // Challenge not found.
+      return res.sendStatus(404);
+    }
+  }
+
+});
+
+app.get("/pretty/:challenge/:network/:address", async function(req, res) {
+  console.log("GET /:challenge/:network/:address", req.params);
+  const challengeName = req.params.challenge;
+  const network = req.params.network;
+  const address = req.params.address;
+
+  for (let c in challenges) {
+    if (challenges[c].name === challengeName) {
+      const challenge = challenges[c];
+      const result = await testChallenge({ challenge, network, address })
+
+      //const stringResult = JSON.stringify(result,null,2)
+      //console.log("result",stringResult);
+      return res.status(200).send("<html><body><pre>"+result.feedback+"</pre></body></html>")
     } else {
       // Challenge not found.
       return res.sendStatus(404);
