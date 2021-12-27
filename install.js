@@ -1,31 +1,38 @@
 var fs = require("fs");
-const { exec } = require('child_process');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
-let challenges = JSON.parse(fs.readFileSync("challenges.json").toString())
+const challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
 
-for(let c in challenges){
-  let challenge = challenges[c]
-  console.log("challenge",challenge)
-  try{
-    console.log("====] INSTALLING "+challenge.name+"[==============]")
-    exec('git clone -b '+challenge.name+' '+challenge.github+' '+challenge.name, (err, stdout, stderr) => {
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-    })
+const setupChallenge = async challenge => {
+  try {
+    if (!fs.existsSync(`./${challenge.name}`)) {
+      console.log("====] CLONING " + challenge.name + "[==============]");
+      const result1 = await exec('git clone -b ' + challenge.name + ' ' + challenge.github + ' ' + challenge.name);
+      console.log(`stdout: ${result1.stdout}\n`);
+      console.log(`stderr: ${result1.stderr}\n`);
+    }
 
-    console.log("====] UPDATING "+challenge.name+"[==============]")
-    exec('cd '+challenge.name+' && git pull && yarn install', (err, stdout, stderr) => {
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-    })
+    console.log("====] UPDATING " + challenge.name + "[==============]");
+    const result2 = await exec('cd ' + challenge.name + ' && git pull && yarn install');
+    console.log(`stdout: ${result2.stdout}\n`);
+    console.log(`stderr: ${result2.stderr}\n`);
 
     console.log("====] INSTALLING "+challenge.name+" MNEMONIC[==============]")
-    exec('cp mnemonic.txt '+challenge.name+'/packages/hardhat/', (err, stdout, stderr) => {
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-    })
+    const result3 = await exec('cp mnemonic.txt ' + challenge.name + '/packages/hardhat/');
+    console.log(`stdout: ${result3.stdout}\n`);
+    console.log(`stderr: ${result3.stderr}\n`);
 
-  }catch(e){
-    console.log(e)
+  } catch(e){
+    console.log(e);
   }
 }
+
+(async () => {
+  for (let c in challenges) {
+    let challenge = challenges[c];
+    console.log("challenge", challenge);
+    await setupChallenge(challenge);
+  }
+})();
+
