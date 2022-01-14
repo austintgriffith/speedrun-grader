@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
+const { isNetworkRunning } = require("./utils/network");
 
 let challenges = JSON.parse(fs.readFileSync("challenges.json").toString())
 
@@ -101,7 +102,7 @@ app.get("/pretty/:challenge/:network/:address", async function(req, res) {
 
 // Main API endpoint.
 app.post('/', async function(req, res){
-  console.log("POST", req.body);
+  console.log("⏩ POST", req.body);
   const challengeId = req.body.challenge;
   const network = req.body.network;
   const address = req.body.address;
@@ -110,6 +111,13 @@ app.post('/', async function(req, res){
     // Challenge not found.
     return res.sendStatus(404);
   }
+
+  if (!(await isNetworkRunning(network))) {
+    console.error(`❌📡❌ ${network} is down.`);
+    return res.status(503).json({ error: `${network} is down.` })
+  }
+
+  console.log(`📡 ${network} is UP.`);
 
   const challenge = challenges[challengeId];
   const result = await testChallenge({ challenge, network, address })
