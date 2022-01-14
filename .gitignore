@@ -1,3 +1,5 @@
+server.cert
+server.key
 challenge-*
 mnemonic.txt
 # Logs
