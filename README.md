@@ -7,7 +7,9 @@ cd speedrun-grader
 yarn install
 ```
 
-you need a 12 word seed phrase as a deployer in a file called `mnemonic.txt`
+Copy `.env.example` to `.env` and put in your [Etherscan API Key](https://etherscan.io/apis).
+
+You also need a 12 word seed phrase as a deployer in a file called `mnemonic.txt`
 
 (you could use this eth.build to create one: https://eth.build/build#6f1ab054a3e274128914fdfd3e0e0868245816059ee4cb0b2a4f608e57bddea8)
 
