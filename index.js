@@ -56,6 +56,17 @@ app.get("/address", async function(req, res) {
   res.status(200).send(stdout)
 });
 
+app.get("/network-check/:network", async function(req, res) {
+  console.log("GET /network-check/:network", req.params);
+  const network = req.params.network;
+
+  if (await isNetworkRunning(network)) {
+    return res.send("<pre>️" + `${network} is UP.` + "  ✔ ✔</pre>");
+  } else {
+    return res.send("<pre>" + `${network} is down.` + " ❌ ❌</pre>");
+  }
+});
+
 // For testing purposes.
 app.get("/:challenge/:network/:address", async function(req, res) {
   console.log("GET /:challenge/:network/:address", req.params);
