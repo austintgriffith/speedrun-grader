@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const { isNetworkRunning } = require("./utils/network");
+const { isNetworkRunning, allowedNetworks } = require("./utils/network");
 
 let challenges = JSON.parse(fs.readFileSync("challenges.json").toString())
 
@@ -121,6 +121,11 @@ app.post('/', async function(req, res){
   if (!challenges[challengeId]) {
     // Challenge not found.
     return res.sendStatus(404);
+  }
+
+  if (!allowedNetworks.includes(network)) {
+    // Network not allowed
+    return res.status(404).json({ error: `"${network}" is not a valid testnet.` })
   }
 
   if (!(await isNetworkRunning(network))) {

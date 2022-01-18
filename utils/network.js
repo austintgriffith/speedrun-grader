@@ -31,5 +31,6 @@ const isNetworkRunning = async (network) => {
 }
 
 module.exports = {
-  isNetworkRunning
+  isNetworkRunning,
+  allowedNetworks
 }
