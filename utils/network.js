@@ -1,7 +1,7 @@
 require('dotenv').config();
 const axios = require('axios');
 
-const allowedNetworks = ["rinkeby", "ropsten", "kovan"];
+const allowedNetworks = ["rinkeby", "ropsten", "kovan", "goerli"];
 const API_KEY = process.env.ETHERSCAN_API_KEY;
 
 /**
