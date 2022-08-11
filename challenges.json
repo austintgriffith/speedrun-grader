@@ -1,14 +1,17 @@
 [
   {
     "name": "challenge-0-simple-nft",
-    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git"
+    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
+    "contractName": "YourCollectible"
   },
   {
     "name": "challenge-1-decentralized-staking",
-    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git"
+    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
+    "contractName": "Staker"
   },
   {
     "name": "challenge-2-token-vendor",
-    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git"
+    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
+    "contractName": "Vendor"
   }
 ]
