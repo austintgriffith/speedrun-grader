@@ -6,12 +6,9 @@ const bodyParser = require("body-parser");
 const app = express();
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
-const {
-  isNetworkRunning,
-  allowedNetworks,
-  fetchContractFromEtherscan,
-} = require("./utils/network");
-const { add } = require("nodemon/lib/rules");
+const { isNetworkRunning } = require("./utils/network");
+const { copyContractFromEtherscan } = require("./utils/contract");
+const { allowedNetworks } = require("./utils/config");
 
 let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
 
@@ -86,34 +83,14 @@ app.get("/:challenge/:network/:address", async function (req, res) {
   for (let c in challenges) {
     if (challenges[c].name === challengeName) {
       const challenge = challenges[c];
-      const result = await testChallenge({ challenge, network, address });
 
-      console.log("result", JSON.stringify(result));
-      return res.json(result);
-    } else {
-      // Challenge not found.
-      return res.sendStatus(404);
-    }
-  }
-});
-
-app.get("/pretty/:challenge/:network/:address", async function (req, res) {
-  console.log("GET /:challenge/:network/:address", req.params);
-  const challengeName = req.params.challenge;
-  const network = req.params.network;
-  const address = req.params.address;
-
-  for (let c in challenges) {
-    if (challenges[c].name === challengeName) {
-      const challenge = challenges[c];
-
-      const contract = await fetchContractFromEtherscan(
+      const contractCopyResult = await copyContractFromEtherscan(
         network,
         address,
-        challenge.contractName
+        challenge.id
       );
 
-      if (!contract) {
+      if (!contractCopyResult) {
         console.error(
           `❌❌ Can't get the contract from ${network} in ${address}.`
         );
@@ -121,11 +98,6 @@ app.get("/pretty/:challenge/:network/:address", async function (req, res) {
           error: `Can't get the contract from ${network} in ${address}.`,
         });
       }
-
-      fs.writeFileSync(
-        `${challenge.name}/packages/hardhat/contracts/${address}.sol`,
-        contract
-      );
 
       const result = await testChallenge({ challenge, network, address });
 
@@ -165,23 +137,18 @@ app.post("/", async function (req, res) {
 
   console.log(`📡 ${network} is UP.`);
 
-  const contract = await fetchContractFromEtherscan(
+  const contractCopyResult = await copyContractFromEtherscan(
     network,
     address,
-    challenges[challengeId].contractName
+    challengeId
   );
 
-  if (!contract) {
+  if (!contractCopyResult) {
     console.error(`❌❌ Can't get the contract from ${network} in ${address}.`);
     return res
       .status(404)
       .json({ error: `Can't get the contract from ${network} in ${address}.` });
   }
-
-  fs.writeFileSync(
-    `${challenges[challengeId].name}/packages/hardhat/contracts/${address}.sol`,
-    contract
-  );
 
   const challenge = challenges[challengeId];
   const result = await testChallenge({ challenge, network, address });

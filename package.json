@@ -9,6 +9,11 @@
     "nodemon": "^2.0.15"
   },
   "scripts": {
-    "start": "nodemon index"
+    "server": "nodemon index"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "challenge-*/*"
+    ]
   }
 }
