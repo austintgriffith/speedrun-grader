@@ -25,7 +25,7 @@ yarn server
 
 now visit http://localhost:54727/
 
-- For pretty feedback, visit: http://localhost:54727/challenge-0-simple-nft/rinkeby/0x43Ab1FCd430C1f20270C2470f857f7a006117bbb
+- For pretty feedback, visit: http://localhost:54727/0/rinkeby/0x43Ab1FCd430C1f20270C2470f857f7a006117bbb
 - The main API endpoint is a POST to http://localhost:54727/. E.g:
 ```
 POST http://localhost:54727

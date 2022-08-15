@@ -74,41 +74,37 @@ app.get("/network-check/:network", async function (req, res) {
 });
 
 // For testing purposes.
-app.get("/:challenge/:network/:address", async function (req, res) {
-  console.log("GET /:challenge/:network/:address", req.params);
-  const challengeName = req.params.challenge;
+app.get("/:challengeId/:network/:address", async function (req, res) {
+  console.log("GET /:challengeId/:network/:address", req.params);
+  const challengeId = req.params.challengeId;
   const network = req.params.network;
   const address = req.params.address;
 
-  for (let c in challenges) {
-    if (challenges[c].name === challengeName) {
-      const challenge = challenges[c];
-
-      const contractCopyResult = await copyContractFromEtherscan(
-        network,
-        address,
-        challenge.id
-      );
-
-      if (!contractCopyResult) {
-        console.error(
-          `❌❌ Can't get the contract from ${network} in ${address}.`
-        );
-        return res.status(404).json({
-          error: `Can't get the contract from ${network} in ${address}.`,
-        });
-      }
-
-      const result = await testChallenge({ challenge, network, address });
-
-      return res
-        .status(200)
-        .send("<html><body><pre>" + result.feedback + "</pre></body></html>");
-    } else {
-      // Challenge not found.
-      return res.sendStatus(404);
-    }
+  if (!challenges[challengeId]) {
+    // Challenge not found.
+    return res.sendStatus(404);
   }
+
+  const challenge = challenges[challengeId];
+
+  const contractCopyResult = await copyContractFromEtherscan(
+    network,
+    address,
+    challenge.id
+  );
+
+  if (!contractCopyResult) {
+    console.error(`❌❌ Can't get the contract from ${network} in ${address}.`);
+    return res.status(404).json({
+      error: `Can't get the contract from ${network} in ${address}.`,
+    });
+  }
+
+  const result = await testChallenge({ challenge, network, address });
+
+  return res
+    .status(200)
+    .send("<html><body><pre>" + result.feedback + "</pre></body></html>");
 });
 
 // Main API endpoint.
