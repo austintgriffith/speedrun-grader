@@ -1,8 +1,6 @@
-require('dotenv').config();
-const axios = require('axios');
-
-const allowedNetworks = ["rinkeby", "ropsten", "kovan", "goerli"];
-const API_KEY = process.env.ETHERSCAN_API_KEY;
+require("dotenv").config();
+const axios = require("axios");
+const { allowedNetworks, ETHERSCAN_API_KEY } = require("./config");
 
 /**
  * Checks if "network" is up.
@@ -17,7 +15,7 @@ const isNetworkRunning = async (network) => {
   // We assume the network is Down that if not valid block in the last 2 minutes
   const aliveFromTimestamp = currentTimestamp - 120;
 
-  const paramString = `?module=block&action=getblocknobytime&timestamp=${aliveFromTimestamp}&closest=after&apikey=${API_KEY}`;
+  const paramString = `?module=block&action=getblocknobytime&timestamp=${aliveFromTimestamp}&closest=after&apikey=${ETHERSCAN_API_KEY}`;
 
   try {
     const response = await axios.get(API_URL + paramString);
@@ -28,9 +26,8 @@ const isNetworkRunning = async (network) => {
     console.error(e);
     return false;
   }
-}
+};
 
 module.exports = {
   isNetworkRunning,
-  allowedNetworks
-}
+};
