@@ -6,7 +6,6 @@ const bodyParser = require("body-parser");
 const app = express();
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
-const { isNetworkRunning } = require("./utils/network");
 const { copyContractFromEtherscan } = require("./utils/contract");
 const { allowedNetworks } = require("./utils/config");
 
@@ -62,17 +61,6 @@ app.get("/address", async function (req, res) {
   res.status(200).send(stdout);
 });
 
-app.get("/network-check/:network", async function (req, res) {
-  console.log("GET /network-check/:network", req.params);
-  const network = req.params.network;
-
-  if (await isNetworkRunning(network)) {
-    return res.send("<pre>️" + `${network} is UP.` + "  ✔ ✔</pre>");
-  } else {
-    return res.send("<pre>" + `${network} is down.` + " ❌ ❌</pre>");
-  }
-});
-
 // For testing purposes.
 app.get("/:challengeId/:network/:address", async function (req, res) {
   console.log("GET /:challengeId/:network/:address", req.params);
@@ -126,12 +114,7 @@ app.post("/", async function (req, res) {
       .json({ error: `"${network}" is not a valid testnet.` });
   }
 
-  if (!(await isNetworkRunning(network))) {
-    console.error(`❌📡❌ ${network} is down.`);
-    return res.status(503).json({ error: `${network} is down.` });
-  }
-
-  console.log(`📡 ${network} is UP.`);
+  console.log(`📡 Downloading contract from ${network}`);
 
   const contractCopyResult = await copyContractFromEtherscan(
     network,
