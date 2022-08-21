@@ -42,8 +42,13 @@ const testChallenge = async ({ challenge, network, address }) => {
 
     result.success = false;
     // ToDo. Parse this and gives a better feedback.
-    result.feedback = e.stdout;
+    result.feedback = e.stdout + "\n\n" + e.stderr;
   }
+
+  // Delete files. Don't need to await.
+  exec(
+    `rm ${challenge.name}/packages/hardhat/contracts/${address}.sol`
+  );
 
   return result;
 };
