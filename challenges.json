@@ -16,5 +16,11 @@
     "name": "challenge-2-token-vendor",
     "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
     "contractName": "Vendor"
+  },
+  {
+    "id": 3,
+    "name": "challenge-3-dice-game",
+    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
+    "contractName": "RiggedRoll"
   }
 ]

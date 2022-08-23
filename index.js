@@ -34,11 +34,12 @@ const testChallenge = async ({ challenge, network, address }) => {
         " yarn test --network hardhat"
     );
 
+    console.log("Tests passed successfully!\n")
     result.success = true;
     // Maybe we don't want this when succeeding.
     result.feedback = stdout;
   } catch (e) {
-    console.error("Test failed", JSON.stringify(e));
+    console.error("Test failed", JSON.stringify(e), "\n");
 
     result.success = false;
     // ToDo. Parse this and gives a better feedback.
