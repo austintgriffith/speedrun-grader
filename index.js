@@ -134,7 +134,7 @@ app.post("/", async function (req, res) {
       e.message
     );
     return res.status(404).json({
-      error: `Can't get the contract from ${network} in ${address}.\n${e.message}`,
+      error: `Can't get the contract from ${network} in ${address}.\n\n${e.message}`,
     });
   }
 
