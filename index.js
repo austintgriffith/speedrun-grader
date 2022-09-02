@@ -34,7 +34,7 @@ const testChallenge = async ({ challenge, network, address }) => {
         " yarn test --network hardhat"
     );
 
-    console.log("Tests passed successfully!\n")
+    console.log("Tests passed successfully!\n");
     result.success = true;
     // Maybe we don't want this when succeeding.
     result.feedback = stdout;
@@ -47,9 +47,7 @@ const testChallenge = async ({ challenge, network, address }) => {
   }
 
   // Delete files. Don't need to await.
-  exec(
-    `rm ${challenge.name}/packages/hardhat/contracts/${address}.sol`
-  );
+  exec(`rm ${challenge.name}/packages/hardhat/contracts/${address}.sol`);
 
   return result;
 };
@@ -81,17 +79,22 @@ app.get("/:challengeId/:network/:address", async function (req, res) {
 
   const challenge = challenges[challengeId];
 
-  const contractCopyResult = await copyContractFromEtherscan(
-    network,
-    address,
-    challenge.id
-  );
-
-  if (!contractCopyResult) {
-    console.error(`❌❌ Can't get the contract from ${network} in ${address}.`);
-    return res.status(404).json({
-      error: `Can't get the contract from ${network} in ${address}.`,
-    });
+  try {
+    await copyContractFromEtherscan(network, address, challenge.id);
+  } catch (e) {
+    console.error(
+      `❌❌ Can't get the contract from ${network} in ${address}.`,
+      e.message
+    );
+    return res.status(200).send(`
+      <html>
+        <body>
+          <pre>
+            <br/>Can't get the contract from ${network} in ${address}.<br/><br/>${e.message}
+          </pre>
+        </body>
+      </html>
+    `);
   }
 
   const result = await testChallenge({ challenge, network, address });
@@ -114,6 +117,7 @@ app.post("/", async function (req, res) {
   }
 
   if (!allowedNetworks.includes(network)) {
+    console.error(`"${network}" is not a valid testnet.`);
     // Network not allowed
     return res
       .status(404)
@@ -122,17 +126,16 @@ app.post("/", async function (req, res) {
 
   console.log(`📡 Downloading contract from ${network}`);
 
-  const contractCopyResult = await copyContractFromEtherscan(
-    network,
-    address,
-    challengeId
-  );
-
-  if (!contractCopyResult) {
-    console.error(`❌❌ Can't get the contract from ${network} in ${address}.`);
-    return res
-      .status(404)
-      .json({ error: `Can't get the contract from ${network} in ${address}.` });
+  try {
+    await copyContractFromEtherscan(network, address, challengeId);
+  } catch (e) {
+    console.error(
+      `❌❌ Can't get the contract from ${network} in ${address}.`,
+      e.message
+    );
+    return res.status(404).json({
+      error: `Can't get the contract from ${network} in ${address}.\n${e.message}`,
+    });
   }
 
   const challenge = challenges[challengeId];

@@ -6,7 +6,9 @@ const fs = require("fs");
 let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
 
 const copyContractFromEtherscan = async (network, address, challengeId) => {
-  if (!allowedNetworks.includes(network)) return false;
+  if (!allowedNetworks.includes(network)) {
+    throw new Error(`${network} is not a valid testnet`);
+  }
 
   const API_URL = `https://api-${network}.etherscan.io/api`;
   const paramString = `?module=contract&action=getsourcecode&address=${address}&apikey=${ETHERSCAN_API_KEY}`;
@@ -24,7 +26,11 @@ const copyContractFromEtherscan = async (network, address, challengeId) => {
     // 1. A string (on flattened contracts)
     // 2. An almost-valid JSON :( (on splitted verified contracts)
     const sourceCode = response?.data?.result?.[0]?.SourceCode;
-    if (!sourceCode) return false;
+    if (!sourceCode) {
+      throw new Error(
+        "Contract Source Code is not valid. Is the Contract verified?"
+      );
+    }
 
     if (sourceCode.slice(0, 1) === "{") {
       // Option 2. An almost valid JSON
@@ -39,7 +45,11 @@ const copyContractFromEtherscan = async (network, address, challengeId) => {
       sourceCodeParsed = sourceCode;
     }
 
-    if (!sourceCodeParsed) return false;
+    if (!sourceCodeParsed) {
+      throw new Error(
+        `Contract Source Code is not valid. Are you submitting ${contractName}.sol Contract Address?`
+      );
+    }
 
     await fs.writeFileSync(
       `${challenges[challengeId].name}/packages/hardhat/contracts/${address}.sol`,
@@ -50,7 +60,7 @@ const copyContractFromEtherscan = async (network, address, challengeId) => {
   } catch (e) {
     // Issue with the Request.
     console.error(e);
-    return false;
+    throw new Error(e);
   }
 };
 
