@@ -1,4 +1,4 @@
-const allowedNetworks = ["rinkeby", "ropsten", "kovan", "goerli"];
+const allowedNetworks = ["rinkeby", "ropsten", "kovan", "goerli", "sepolia"];
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 
 module.exports = {
