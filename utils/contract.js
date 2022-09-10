@@ -2,6 +2,9 @@ require("dotenv").config();
 const axios = require("axios");
 const { allowedNetworks, ETHERSCAN_API_KEY } = require("./config");
 const fs = require("fs");
+const util = require("util");
+const { MESSAGES } = require("./messages");
+const exec = util.promisify(require("child_process").exec);
 
 let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
 
@@ -64,7 +67,67 @@ const copyContractFromEtherscan = async (network, address, challengeId) => {
   }
 };
 
+// Run tests for a remote {address} contract, for a {challenge} in {network}.
+const testChallenge = async ({ challenge, network, address }) => {
+  const result = {
+    challenge: challenge.name,
+    network,
+    address,
+  };
+  try {
+    console.log("====] RUNNING " + challenge.name + "[==============]");
+
+    const { stdout } = await exec(
+      "cd " +
+        challenge.name +
+        " && CONTRACT_ADDRESS=" +
+        address +
+        " yarn test --network hardhat"
+    );
+
+    console.log("Tests passed successfully!\n");
+    result.success = true;
+    // Maybe we don't want this when succeeding.
+    result.feedback = `${MESSAGES.successTest(challenge)}<pre>${stdout}</pre>`;
+  } catch (e) {
+    console.error("Test failed", JSON.stringify(e), "\n");
+
+    result.success = false;
+    // ToDo. Parse this and gives a better feedback.
+    result.feedback = `${MESSAGES.failedTest(challenge)}<pre>${e.stdout}\n\n${
+      e.stderr
+    }</pre>`;
+  }
+
+  // Delete files. Don't need to await.
+  exec(`rm ${challenge.name}/packages/hardhat/contracts/${address}.sol`);
+
+  return result;
+};
+
+const downloadAndTestContract = async (challengeId, network, address) => {
+  if (!challenges[challengeId]) {
+    throw new Error(`Challenge "${challengeId}" not found.`);
+  }
+
+  if (!allowedNetworks.includes(network)) {
+    throw new Error(`"${network}" is not a valid testnet.`);
+  }
+
+  console.log(`📡 Downloading contract from ${network}`);
+
+  try {
+    await copyContractFromEtherscan(network, address, challengeId);
+  } catch (e) {
+    throw e;
+  }
+
+  const challenge = challenges[challengeId];
+  return await testChallenge({ challenge, network, address });
+};
+
 module.exports = {
   copyContractFromEtherscan,
   allowedNetworks,
+  downloadAndTestContract,
 };

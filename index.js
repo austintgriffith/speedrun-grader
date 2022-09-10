@@ -6,8 +6,8 @@ const bodyParser = require("body-parser");
 const app = express();
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
-const { copyContractFromEtherscan } = require("./utils/contract");
-const { allowedNetworks } = require("./utils/config");
+const { downloadAndTestContract } = require("./utils/contract");
+const { MESSAGES } = require("./utils/messages");
 
 let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
 
@@ -15,42 +15,6 @@ app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Run tests for a remote {address} contract, for a {challenge} in {network}.
-const testChallenge = async ({ challenge, network, address }) => {
-  const result = {
-    challenge: challenge.name,
-    network,
-    address,
-  };
-  try {
-    console.log("====] RUNNING " + challenge.name + "[==============]");
-
-    const { stdout } = await exec(
-      "cd " +
-        challenge.name +
-        " && CONTRACT_ADDRESS=" +
-        address +
-        " yarn test --network hardhat"
-    );
-
-    console.log("Tests passed successfully!\n");
-    result.success = true;
-    // Maybe we don't want this when succeeding.
-    result.feedback = stdout;
-  } catch (e) {
-    console.error("Test failed", JSON.stringify(e), "\n");
-
-    result.success = false;
-    // ToDo. Parse this and gives a better feedback.
-    result.feedback = e.stdout + "\n\n" + e.stderr;
-  }
-
-  // Delete files. Don't need to await.
-  exec(`rm ${challenge.name}/packages/hardhat/contracts/${address}.sol`);
-
-  return result;
-};
 
 app.get("/", async function (req, res) {
   res.status(200).send("HELLO WORLD!");
@@ -72,36 +36,21 @@ app.get("/:challengeId/:network/:address", async function (req, res) {
   const network = req.params.network;
   const address = req.params.address;
 
-  if (!challenges[challengeId]) {
-    // Challenge not found.
-    return res.sendStatus(404);
-  }
-
-  const challenge = challenges[challengeId];
-
+  let result;
   try {
-    await copyContractFromEtherscan(network, address, challenge.id);
+    result = await downloadAndTestContract(challengeId, network, address);
   } catch (e) {
-    console.error(
-      `❌❌ Can't get the contract from ${network} in ${address}.`,
-      e.message
-    );
     return res.status(200).send(`
       <html>
         <body>
-          <pre>
-            <br/>Can't get the contract from ${network} in ${address}.<br/><br/>${e.message}
-          </pre>
+           <p>Can't get the contract from ${network} in ${address}.</p>
+           <p>${e.message}</p>${MESSAGES.telegramHelp(challenges[challengeId])}
         </body>
       </html>
     `);
   }
 
-  const result = await testChallenge({ challenge, network, address });
-
-  return res
-    .status(200)
-    .send("<html><body><pre>" + result.feedback + "</pre></body></html>");
+  return res.status(200).send(`<html><body>${result.feedback}</body></html>`);
 });
 
 // Main API endpoint.
@@ -111,35 +60,16 @@ app.post("/", async function (req, res) {
   const network = req.body.network;
   const address = req.body.address;
 
-  if (!challenges[challengeId]) {
-    // Challenge not found.
-    return res.sendStatus(404);
-  }
-
-  if (!allowedNetworks.includes(network)) {
-    console.error(`"${network}" is not a valid testnet.`);
-    // Network not allowed
-    return res
-      .status(404)
-      .json({ error: `"${network}" is not a valid testnet.` });
-  }
-
-  console.log(`📡 Downloading contract from ${network}`);
-
+  let result;
   try {
-    await copyContractFromEtherscan(network, address, challengeId);
+    result = await downloadAndTestContract(challengeId, network, address);
   } catch (e) {
-    console.error(
-      `❌❌ Can't get the contract from ${network} in ${address}.`,
-      e.message
-    );
     return res.status(404).json({
-      error: `Can't get the contract from ${network} in ${address}.\n\n${e.message}`,
+      error: `<p>Can't get the contract from ${network} in ${address}.</p><p>${
+        e.message
+      }</p>${MESSAGES.telegramHelp(challenges[challengeId])}`,
     });
   }
-
-  const challenge = challenges[challengeId];
-  const result = await testChallenge({ challenge, network, address });
 
   return res.json(result);
 });
