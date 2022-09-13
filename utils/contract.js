@@ -4,6 +4,7 @@ const { allowedNetworks, ETHERSCAN_API_KEY } = require("./config");
 const fs = require("fs");
 const util = require("util");
 const { MESSAGES } = require("./messages");
+const { ethers } = require("ethers");
 const exec = util.promisify(require("child_process").exec);
 
 let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
@@ -106,6 +107,10 @@ const testChallenge = async ({ challenge, network, address }) => {
 };
 
 const downloadAndTestContract = async (challengeId, network, address) => {
+  if (!ethers.utils.isAddress(address)) {
+    throw new Error(`${address} is not a valid address.`);
+  }
+
   if (!challenges[challengeId]) {
     throw new Error(`Challenge "${challengeId}" not found.`);
   }
