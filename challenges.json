@@ -32,7 +32,7 @@
   {
     "id": 4,
     "name": "challenge-4-dex",
-    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges/tree/challenge-4-dex",
+    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
     "contractName": "DEX",
     "telegram": "https://t.me/+_NeUIJ664Tc1MzIx",
     "successMessage": "<p>You have successfully passed the Dex Challenge! Great work!</p><p>--</p>"
