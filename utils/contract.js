@@ -128,6 +128,9 @@ const downloadAndTestContract = async (challengeId, network, address) => {
   }
 
   const challenge = challenges[challengeId];
+
+  // To avoid case sensitive conflicts.
+  address = address.toLowerCase();
   return await testChallenge({ challenge, network, address });
 };
 
