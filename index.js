@@ -34,7 +34,8 @@ app.get("/:challengeId/:network/:address", async function (req, res) {
   console.log("GET /:challengeId/:network/:address", req.params);
   const challengeId = req.params.challengeId;
   const network = req.params.network;
-  const address = req.params.address;
+  // To avoid case sensitive conflicts.
+  const address = req.params.address.toLowerCase();
 
   let result;
   try {
