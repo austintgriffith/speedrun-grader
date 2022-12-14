@@ -1,6 +1,6 @@
 # speedrun-grader
 
-Grade verified live contract on the hardhat network.
+Grade verified live contracts on the hardhat network.
 
 ```
 git clone https://github.com/austintgriffith/speedrun-grader
@@ -17,6 +17,23 @@ node install
 
 You can rerun the install anytime to update all the repos.
 
+**Note**: For challenge 2, you have to manually create a `YourTokenAutograder.sol` file inside `challenge-2-token-vendor/packages/hardhat/contracts`
+
+```solidity
+pragma solidity 0.8.4;
+// SPDX-License-Identifier: MIT
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract YourToken is ERC20 {
+    constructor() ERC20("Gold", "GLD") {
+        _mint( msg.sender, 1000 * 10 ** 18);
+    }
+}
+
+```
+
+---
 
 For local dev, you can run:
 ```
