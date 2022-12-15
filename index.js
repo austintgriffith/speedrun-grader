@@ -34,7 +34,7 @@ app.get("/:challengeId/:network/:address", async function (req, res) {
   console.log("GET /:challengeId/:network/:address", req.params);
   const challengeId = req.params.challengeId;
   const network = req.params.network;
-  // To avoid case sensitive conflicts.
+  // To avoid case-sensitive conflicts.
   const address = req.params.address.toLowerCase();
 
   let result;
@@ -59,7 +59,8 @@ app.post("/", async function (req, res) {
   console.log("⏩ POST", req.body);
   const challengeId = req.body.challenge;
   const network = req.body.network;
-  const address = req.body.address;
+  // To avoid case-sensitive conflicts.
+  const address = req.body.address.toLowerCase();
 
   let result;
   try {
