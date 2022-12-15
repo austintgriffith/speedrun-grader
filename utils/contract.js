@@ -102,6 +102,8 @@ const testChallenge = async ({ challenge, network, address }) => {
 
   // Delete files. Don't need to await.
   exec(`rm ${challenge.name}/packages/hardhat/contracts/${address}.sol`);
+  exec(`rm -rf ${challenge.name}/packages/hardhat/artifacts/contracts/${address}.sol`);
+  exec(`rm ${challenge.name}/packages/hardhat/cache/solidity-files-cache.json`);
 
   return result;
 };
