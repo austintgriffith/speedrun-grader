@@ -1,5 +1,5 @@
 #/bin/bash
-sudo certbot certonly --standalone -d grader.speedrunethereum.com --config-dir ~/.certbot/config --logs-dir ~/.certbot/logs --work-dir ~/.certbot/work
+sudo certbot certonly --standalone -d grader.speedrunethereum.com --config-dir ~/.certbot/config --logs-dir ~/.certbot/logs --work-dir ~/.certbot/work --keep-until-expiring
 
 #if you run it without the dirs, it will be in /etc/letsencrypt/live/rpc.eth.build
 
