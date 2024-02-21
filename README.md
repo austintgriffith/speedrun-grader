@@ -36,7 +36,7 @@ contract YourToken is ERC20 {
 ---
 
 For local dev, you can run:
-```
+```bash
 yarn server
 ```
 

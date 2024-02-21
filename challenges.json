@@ -2,37 +2,37 @@
   {
     "id": 0,
     "name": "challenge-0-simple-nft",
-    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
+    "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "YourCollectible",
     "telegram": "https://t.me/+Y2vqXZZ_pEFhMGMx"
   },
   {
     "id": 1,
     "name": "challenge-1-decentralized-staking",
-    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
+    "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "Staker",
     "telegram": "https://t.me/joinchat/E6r91UFt4oMJlt01"
   },
   {
     "id": 2,
     "name": "challenge-2-token-vendor",
-    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
+    "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "Vendor",
     "telegram": "https://t.me/joinchat/IfARhZFc5bfPwpjq",
-    "successMessage": "<p>You have successfully passed challenge 2! Keep it up with Challenge 3 - Dice Game!</p><p>--</p>"
+    "successMessage": "<p>You have successfully passed challenge 2!</p>p>You have passed the first three challenges on SpeedRunEthereum and can now join the BuidlGuidl! Head to your profile on SpeedRunEthereum.com and use the link to join. This will also unlock the Dice Game challenge and some more more challenging ones: Decentralized Exchange, Multisig, and SVG NFT challenges. These are more open ended which, once complete, can be submitted as a build on your buidlguidl.com portfolio to show off your web3 knowledge!</p><p>Join the next challenge’s Telegram channel on SpeedRunEthereum to get started. This channel includes other builders and BuidlGuild members to guide you along the way</p><p>--</p>"
   },
   {
     "id": 3,
     "name": "challenge-3-dice-game",
-    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
+    "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "RiggedRoll",
     "telegram": "https://t.me/+3StA0aBSArFjNjUx",
-    "successMessage": "<p>This looks good! Demo site and contract code are solid and the dice only roll when it’s a winner!</p><p>You have passed the first four challenges on SpeedRunEthereum and can now join the BuildGuidl! Head to your profile on SpeedRunEthereum.com and use the link to join. This will also unlock the more challenging Decentralized Exchange, Multisig, and SVG NFT challenges. These are more open ended which, once complete, can be submitted as a build on your buidlguidl.com portfolio to show off your web3 knowledge!</p><p>Join the next challenge’s Telegram channel on SpeedRunEthereum to get started. This channel includes other builders and BuidlGuild members to guide you along the way</p><p>--</p>"
+    "successMessage": "<p>This looks good! Demo site and contract code are solid and the dice only roll when it’s a winner!</p><<p>--</p>"
   },
   {
     "id": 4,
     "name": "challenge-4-dex",
-    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
+    "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "DEX",
     "telegram": "https://t.me/+_NeUIJ664Tc1MzIx",
     "successMessage": "<p>You have successfully passed the Dex Challenge! Great work!</p><p>--</p>"
@@ -43,8 +43,8 @@
   {},
   {
     "id": 9,
-    "name": "challenge-9-state-channels",
-    "github": "https://github.com/scaffold-eth/scaffold-eth-challenges.git",
+    "name": "challenge-5-state-channels",
+    "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "Streamer",
     "telegram": "https://t.me/+k0eUYngV2H0zYWUx",
     "successMessage": "<p>You have successfully passed the State Channel Challenge! Great work!</p><p>--</p>"
