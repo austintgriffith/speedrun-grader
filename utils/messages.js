@@ -8,7 +8,7 @@ const MESSAGES = {
   failedTest: (challenge) => {
     return (
       `<p>This submission did not pass all tests. Review the output below to see which tests failed and why. ` +
-      `Viewing the file that is used for testing (packages/hardhat/test/challenge_${challenge.id}.js) ` +
+      `Viewing the file that is used for testing (packages/hardhat/test/Challenge${challenge.id}.ts) ` +
       `may help you find the exact section in which the tests failed.</p>` +
       `${MESSAGES.telegramHelp(challenge)}<p>--</p>`
     );
