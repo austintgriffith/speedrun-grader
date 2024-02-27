@@ -37,12 +37,8 @@
     "telegram": "https://t.me/+_NeUIJ664Tc1MzIx",
     "successMessage": "<p>You have successfully passed the Dex Challenge! Great work!</p><p>--</p>"
   },
-  {},
-  {},
-  {},
-  {},
   {
-    "id": 9,
+    "id": 5,
     "name": "challenge-5-state-channels",
     "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "Streamer",
