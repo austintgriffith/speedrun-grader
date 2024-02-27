@@ -56,7 +56,7 @@ const copyContractFromEtherscan = async (network, address, challengeId) => {
     }
 
     await fs.writeFileSync(
-      `${challenges[challengeId].name}/packages/hardhat/contracts/${address}.sol`,
+      `${challenges[challengeId].name}/packages/hardhat/contracts/download-${address}.sol`,
       sourceCodeParsed
     );
 
@@ -83,7 +83,7 @@ const testChallenge = async ({ challenge, network, address }) => {
         challenge.name +
         " && CONTRACT_ADDRESS=" +
         address +
-        " yarn test --network hardhat"
+        " yarn test"
     );
 
     console.log("Tests passed successfully!\n");
@@ -101,9 +101,9 @@ const testChallenge = async ({ challenge, network, address }) => {
   }
 
   // Delete files. Don't need to await.
-  exec(`rm ${challenge.name}/packages/hardhat/contracts/${address}.sol`);
-  exec(`rm -rf ${challenge.name}/packages/hardhat/artifacts/contracts/${address}.sol`);
-  exec(`rm ${challenge.name}/packages/hardhat/cache/solidity-files-cache.json`);
+  exec(`rm -f ${challenge.name}/packages/hardhat/contracts/download-${address}.sol`);
+  exec(`rm -rf ${challenge.name}/packages/hardhat/artifacts/contracts/download-${address}.sol`);
+  exec(`rm -f ${challenge.name}/packages/hardhat/cache/solidity-files-cache.json`);
 
   return result;
 };
