@@ -26,9 +26,10 @@ const copyContractFromEtherscan = async (network, address, challengeId) => {
       return false;
     }
 
-    // On "sourceCode" Etherscan return two possible values:
+    // On "sourceCode" Etherscan return 3 possible values:
     // 1. A string (on flattened contracts)
     // 2. An almost-valid JSON :( (on splitted verified contracts)
+    // 3. A valid JSON (on _some_ splitted verified contracts). Damn boi.
     const sourceCode = response?.data?.result?.[0]?.SourceCode;
     if (!sourceCode) {
       throw new Error(
@@ -36,17 +37,24 @@ const copyContractFromEtherscan = async (network, address, challengeId) => {
       );
     }
 
-    if (sourceCode.slice(0, 1) === "{") {
-      // Option 2. An almost valid JSON
-      // Remove the initial and final { }
-      const validJson = JSON.parse(sourceCode.substring(1).slice(0, -1));
+    try {
+      // Option 3. A valid JSON
+      const parsedJson = JSON.parse(sourceCode);
+      sourceCodeParsed = parsedJson?.[`${contractName}.sol`]?.content;
+      console.log()
+    } catch (e) {
+      if (sourceCode.slice(0, 1) === "{") {
+        // Option 2. An almost valid JSON
+        // Remove the initial and final { }
+        const validJson = JSON.parse(sourceCode.substring(1).slice(0, -1));
 
-      sourceCodeParsed =
-        validJson?.sources[`contracts/${contractName}.sol`]?.content ??
-        validJson?.sources[`./contracts/${contractName}.sol`]?.content;
-    } else {
-      // Option 1. A string
-      sourceCodeParsed = sourceCode;
+        sourceCodeParsed =
+          validJson?.sources[`contracts/${contractName}.sol`]?.content ??
+          validJson?.sources[`./contracts/${contractName}.sol`]?.content;
+      } else {
+        // Option 1. A string
+        sourceCodeParsed = sourceCode;
+      }
     }
 
     if (!sourceCodeParsed) {
