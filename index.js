@@ -58,16 +58,16 @@ app.get("/:challengeId/:network/:address", async function (req, res) {
 app.post("/", async function (req, res) {
   console.log("⏩ POST", req.body);
   const challengeId = req.body.challenge;
-  const network = req.body.network;
+  const blockExplorer = req.body.blockExplorer;
   // To avoid case-sensitive conflicts.
   const address = req.body.address.toLowerCase();
 
   let result;
   try {
-    result = await downloadAndTestContract(challengeId, network, address);
+    result = await downloadAndTestContract(challengeId, blockExplorer, address);
   } catch (e) {
     return res.status(404).json({
-      error: `<p>Can't get the contract from ${network} in ${address}.</p><p>${
+      error: `<p>Can't get the contract from ${blockExplorer} in ${address}.</p><p>${
         e.message
       }</p>${MESSAGES.telegramHelp(challenges[challengeId])}`,
     });

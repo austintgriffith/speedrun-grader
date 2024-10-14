@@ -1,6 +1,6 @@
 require("dotenv").config();
 const axios = require("axios");
-const { allowedNetworks, ETHERSCAN_API_KEY } = require("./config");
+const { VALID_BLOCK_EXPLORER_HOSTS, getContractCodeUrl } = require("./config");
 const fs = require("fs");
 const util = require("util");
 const { MESSAGES } = require("./messages");
@@ -9,18 +9,22 @@ const exec = util.promisify(require("child_process").exec);
 
 let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
 
-const copyContractFromEtherscan = async (network, address, challengeId) => {
-  if (!allowedNetworks.includes(network)) {
-    throw new Error(`${network} is not a valid testnet`);
+const copyContractFromEtherscan = async (
+  blockExplorer,
+  address,
+  challengeId
+) => {
+  if (!VALID_BLOCK_EXPLORER_HOSTS.includes(blockExplorer)) {
+    throw new Error(`${blockExplorer} is not a valid block explorer`);
   }
 
-  const API_URL = `https://api-${network}.etherscan.io/api`;
-  const paramString = `?module=contract&action=getsourcecode&address=${address}&apikey=${ETHERSCAN_API_KEY}`;
   const contractName = challenges[challengeId].contractName;
 
   let sourceCodeParsed;
   try {
-    const response = await axios.get(API_URL + paramString);
+    const response = await axios.get(
+      getContractCodeUrl(blockExplorer, address)
+    );
     // The Etherscan API returns OK / NOTOK
     if (response.data.message !== "OK") {
       return false;
@@ -41,7 +45,6 @@ const copyContractFromEtherscan = async (network, address, challengeId) => {
       // Option 3. A valid JSON
       const parsedJson = JSON.parse(sourceCode);
       sourceCodeParsed = parsedJson?.[`${contractName}.sol`]?.content;
-      console.log()
     } catch (e) {
       if (sourceCode.slice(0, 1) === "{") {
         // Option 2. An almost valid JSON
@@ -76,22 +79,18 @@ const copyContractFromEtherscan = async (network, address, challengeId) => {
   }
 };
 
-// Run tests for a remote {address} contract, for a {challenge} in {network}.
-const testChallenge = async ({ challenge, network, address }) => {
+// Run tests for a remote {address} contract, for a {challenge} in {blockExplorer}.
+const testChallenge = async ({ challenge, blockExplorer, address }) => {
   const result = {
     challenge: challenge.name,
-    network,
+    blockExplorer,
     address,
   };
   try {
     console.log("====] RUNNING " + challenge.name + "[==============]");
 
     const { stdout } = await exec(
-      "cd " +
-        challenge.name +
-        " && CONTRACT_ADDRESS=" +
-        address +
-        " yarn test"
+      "cd " + challenge.name + " && CONTRACT_ADDRESS=" + address + " yarn test"
     );
 
     console.log("Tests passed successfully!\n");
@@ -109,14 +108,20 @@ const testChallenge = async ({ challenge, network, address }) => {
   }
 
   // Delete files. Don't need to await.
-  exec(`rm -f ${challenge.name}/packages/hardhat/contracts/download-${address}.sol`);
-  exec(`rm -rf ${challenge.name}/packages/hardhat/artifacts/contracts/download-${address}.sol`);
-  exec(`rm -f ${challenge.name}/packages/hardhat/cache/solidity-files-cache.json`);
+  exec(
+    `rm -f ${challenge.name}/packages/hardhat/contracts/download-${address}.sol`
+  );
+  exec(
+    `rm -rf ${challenge.name}/packages/hardhat/artifacts/contracts/download-${address}.sol`
+  );
+  exec(
+    `rm -f ${challenge.name}/packages/hardhat/cache/solidity-files-cache.json`
+  );
 
   return result;
 };
 
-const downloadAndTestContract = async (challengeId, network, address) => {
+const downloadAndTestContract = async (challengeId, blockExplorer, address) => {
   if (!ethers.utils.isAddress(address)) {
     throw new Error(`${address} is not a valid address.`);
   }
@@ -125,14 +130,14 @@ const downloadAndTestContract = async (challengeId, network, address) => {
     throw new Error(`Challenge "${challengeId}" not found.`);
   }
 
-  if (!allowedNetworks.includes(network)) {
-    throw new Error(`"${network}" is not a valid testnet.`);
+  if (!VALID_BLOCK_EXPLORER_HOSTS.includes(blockExplorer)) {
+    throw new Error(`"${blockExplorer}" is not a valid testnet.`);
   }
 
-  console.log(`📡 Downloading contract from ${network}`);
+  console.log(`📡 Downloading contract from ${blockExplorer}`);
 
   try {
-    await copyContractFromEtherscan(network, address, challengeId);
+    await copyContractFromEtherscan(blockExplorer, address, challengeId);
   } catch (e) {
     throw e;
   }
@@ -141,11 +146,11 @@ const downloadAndTestContract = async (challengeId, network, address) => {
 
   // To avoid case sensitive conflicts.
   address = address.toLowerCase();
-  return await testChallenge({ challenge, network, address });
+  return await testChallenge({ challenge, blockExplorer, address });
 };
 
 module.exports = {
   copyContractFromEtherscan,
-  allowedNetworks,
+  VALID_BLOCK_EXPLORER_HOSTS,
   downloadAndTestContract,
 };

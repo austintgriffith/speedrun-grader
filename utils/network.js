@@ -1,6 +1,6 @@
 require("dotenv").config();
 const axios = require("axios");
-const { allowedNetworks, ETHERSCAN_API_KEY } = require("./config");
+const { VALID_BLOCK_EXPLORER_HOSTS, ETHERSCAN_API_KEY } = require("./config");
 
 /**
  * Checks if "network" is up.
@@ -8,7 +8,7 @@ const { allowedNetworks, ETHERSCAN_API_KEY } = require("./config");
  * @returns {Promise<boolean>}
  */
 const isNetworkRunning = async (network) => {
-  if (!allowedNetworks.includes(network)) return false;
+  if (!VALID_BLOCK_EXPLORER_HOSTS.includes(network)) return false;
 
   const API_URL = `https://api-${network}.etherscan.io/api`;
   const currentTimestamp = Math.round(Date.now() / 1000);
