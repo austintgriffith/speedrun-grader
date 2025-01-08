@@ -30,7 +30,7 @@ const setupChallenge = async (challenge) => {
     // If installation was successful, swap the folders
     if (fs.existsSync(tempFolder)) {
       if (fs.existsSync(`./${challenge.name}`)) {
-        console.log(`🗑  Removing old ${challenge.name}`);
+        console.log(`🗑  Removing old ${challenge.name} folder`);
         fs.rmSync(`./${challenge.name}`, { recursive: true, force: true });
       }
 
