@@ -30,23 +30,20 @@ app.get("/address", async function (req, res) {
 });
 
 // For testing purposes.
-app.get("/:challengeId/:network/:address", async function (req, res) {
-  console.log("GET /:challengeId/:network/:address", req.params);
+app.get("/:challengeId/:blockExplorer/:address", async function (req, res) {
+  console.log("GET /:challengeId/:blockExplorer/:address", req.params);
   const challengeId = req.params.challengeId;
-  const network = req.params.network;
-  const blockExplorer = req.body.blockExplorer;
+  const blockExplorer = req.params.blockExplorer;
   // To avoid case-sensitive conflicts.
   const address = req.params.address.toLowerCase();
 
   let result;
   try {
-    result = await downloadAndTestContract(challengeId, network, address);
     result = await downloadAndTestContract(challengeId, blockExplorer, address);
   } catch (e) {
     return res.status(200).send(`
       <html>
         <body>
-           <p>Can't get the contract from ${network} in ${address}.</p>
            <p>Can't get the contract from ${blockExplorer} in ${address}.</p>
            <p>${e.message}</p>${MESSAGES.telegramHelp(challenges[challengeId])}
         </body>
