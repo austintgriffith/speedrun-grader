@@ -4,7 +4,7 @@ const exec = util.promisify(require("child_process").exec);
 
 const challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
 
-const CREATE_ETH_STABLE_VERSION_FOR_CHALLENGES = "0.0.65";
+const CREATE_ETH_STABLE_VERSION_FOR_CHALLENGES = "0.1.0";
 const createEthVersion =
   process.argv[2] || CREATE_ETH_STABLE_VERSION_FOR_CHALLENGES;
 
@@ -19,7 +19,7 @@ const setupChallenge = async (challenge) => {
 
     console.log(`📦 Installing ${challenge.name} to temporary folder`);
     const result1 = await exec(
-      `npx --yes create-eth@${createEthVersion} -s hardhat -e scaffold-eth/se-2-challenges:${challenge.name}--extension ${tempFolder}`
+      `npx --yes create-eth@${createEthVersion} -s hardhat -e scaffold-eth/se-2-challenges:${challenge.name} ${tempFolder}`
     );
     // console.log(`stdout: ${result1.stdout}\n`);
 
