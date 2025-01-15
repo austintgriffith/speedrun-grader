@@ -40,8 +40,8 @@ const setupChallenge = async (challenge) => {
   } catch (e) {
     console.log(`❌ Error installing ${challenge.name}:`, e);
     // Clean up temp folder if it exists
-    if (fs.existsSync(`./${challenge.name}_new`)) {
-      fs.rmSync(`./${challenge.name}_new`, { recursive: true, force: true });
+    if (fs.existsSync(`./${challenge.name}_temp`)) {
+      fs.rmSync(`./${challenge.name}_temp`, { recursive: true, force: true });
     }
   }
 };
