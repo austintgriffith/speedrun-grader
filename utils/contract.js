@@ -87,18 +87,18 @@ const testChallenge = async ({ challenge, blockExplorer, address }) => {
     address,
   };
   try {
-    console.log("====] RUNNING " + challenge.name + "[==============]");
+    console.log(`🚀 Running ${challenge.name}`);
 
     const { stdout } = await exec(
       "cd " + challenge.name + " && CONTRACT_ADDRESS=" + address + " yarn test"
     );
 
-    console.log("Tests passed successfully!\n");
+    console.log("✅ Tests passed successfully!\n");
     result.success = true;
     // Maybe we don't want this when succeeding.
     result.feedback = `${MESSAGES.successTest(challenge)}<pre>${stdout}</pre>`;
   } catch (e) {
-    console.error("Test failed", JSON.stringify(e), "\n");
+    console.error("❌ Test failed", JSON.stringify(e), "\n");
 
     result.success = false;
     // ToDo. Parse this and gives a better feedback.
@@ -131,7 +131,7 @@ const downloadAndTestContract = async (challengeId, blockExplorer, address) => {
   }
 
   if (!VALID_BLOCK_EXPLORER_HOSTS.includes(blockExplorer)) {
-    throw new Error(`"${blockExplorer}" is not a valid testnet.`);
+    throw new Error(`"${blockExplorer}" is not a valid block explorer.`);
   }
 
   console.log(`📡 Downloading contract from ${blockExplorer}`);

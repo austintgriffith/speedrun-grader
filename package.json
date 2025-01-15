@@ -10,7 +10,8 @@
     "nodemon": "^2.0.15"
   },
   "scripts": {
-    "server": "nodemon index"
+    "server": "nodemon index",
+    "install-challenges": "node install.js"
   },
   "nodemonConfig": {
     "ignore": [
