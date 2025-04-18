@@ -39,10 +39,10 @@
   },
   {
     "id": 5,
-    "name": "challenge-5-state-channels",
+    "name": "over-collateralized-lending",
     "github": "https://github.com/scaffold-eth/se-2-challenges.git",
-    "contractName": "Streamer",
-    "telegram": "https://t.me/+k0eUYngV2H0zYWUx",
-    "successMessage": "<p>You have successfully passed the State Channel Challenge! Great work!</p><p>--</p>"
+    "contractName": "Lending",
+    "telegram": "https://t.me/+xQr5d-oVhLMwZmUx",
+    "successMessage": "<p>You have successfully passed the Over-collateralized Lending Challenge! Great work!</p><p>--</p>"
   }
 ]
