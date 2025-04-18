@@ -1,6 +1,7 @@
 server.cert
 server.key
 challenge-*
+over-collateralized-lending
 mnemonic.txt
 # Logs
 logs
