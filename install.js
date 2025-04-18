@@ -54,6 +54,13 @@ const setupChallenge = async (challenge) => {
     );
 
     console.log(`🔍 Challenge ${c} details:`, challenge);
+
+    // Skip if challenge folder already exists
+    if (fs.existsSync(`./${challenge.name}`)) {
+      console.log(`📁 Challenge ${c} folder already exists, skipping`);
+      continue;
+    }
+
     await setupChallenge(challenge);
     console.log(`✅ Challenge ${c} installation completed`);
   }
