@@ -39,7 +39,7 @@
   },
   {
     "id": 5,
-    "name": "over-collateralized-lending",
+    "name": "challenge-over-collateralized-lending",
     "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "Lending",
     "telegram": "https://t.me/+xQr5d-oVhLMwZmUx",
