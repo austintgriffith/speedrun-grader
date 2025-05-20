@@ -3,19 +3,13 @@ const VALID_BLOCK_EXPLORER_HOSTS = [
   "sepolia-optimism.etherscan.io",
 ];
 
-const API_CONFIG = {
-  "sepolia.etherscan.io": {
-    url: "https://api-sepolia.etherscan.io/api",
-    key: process.env.ETHERSCAN_API_KEY,
-  },
-  "sepolia-optimism.etherscan.io": {
-    url: "https://api-sepolia-optimistic.etherscan.io/api",
-    key: process.env.ETHERSCAN_OPTIMISTIC_API_KEY,
-  },
+const BLOCK_EXPLORER_TO_CHAIN_ID = {
+  "sepolia.etherscan.io": 11155111,
+  "sepolia-optimism.etherscan.io": 11155420,
 };
 
 const getContractCodeUrl = (blockExplorer, address) => {
-  return `${API_CONFIG[blockExplorer].url}?module=contract&action=getsourcecode&address=${address}&apikey=${API_CONFIG[blockExplorer].key}`;
+  return `https://api.etherscan.io/v2/api?chainid=${BLOCK_EXPLORER_TO_CHAIN_ID[blockExplorer]}&module=contract&action=getsourcecode&address=${address}&apikey=${process.env.ETHERSCAN_API_KEY}`;
 };
 
 module.exports = {
