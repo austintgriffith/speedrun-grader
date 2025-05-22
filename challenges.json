@@ -44,5 +44,13 @@
     "contractName": "Lending",
     "telegram": "https://t.me/+xQr5d-oVhLMwZmUx",
     "successMessage": "<p>You have successfully passed the Over-collateralized Lending Challenge! Great work!</p><p>--</p>"
+  },
+  {
+    "id": 6,
+    "name": "challenge-prediction-markets",
+    "github": "https://github.com/scaffold-eth/se-2-challenges.git",
+    "contractName": "PredictionMarket",
+    "telegram": "https://t.me/+NY00cDZ7PdBmNWEy",
+    "successMessage": "<p>You have successfully passed the Prediction Markets Challenge! Great work!</p><p>--</p>"
   }
 ]
