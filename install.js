@@ -10,7 +10,7 @@ const createEthVersion =
 
 const setupChallenge = async (challenge) => {
   try {
-    const tempFolder = `./${challenge.name}_temp`;
+    const tempFolder = `${challenge.name}_temp`;
 
     if (fs.existsSync(tempFolder)) {
       console.log(`🗑  Removing old temporary folder of ${challenge.name}`);
