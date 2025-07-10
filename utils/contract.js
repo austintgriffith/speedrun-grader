@@ -4,14 +4,10 @@ const fs = require("fs");
 const util = require("util");
 const { MESSAGES } = require("./messages");
 const { ethers } = require("ethers");
+const { SUPPORTED_CHAINS } = require("./supported-chains");
 const exec = util.promisify(require("child_process").exec);
 
 let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
-
-const getEtherscanV2Chainlist = async () => {
-  const response = await axios.get("https://api.etherscan.io/v2/chainlist");
-  return response.data.result;
-};
 
 const getContractCodeUrl = (chainId, address) => {
   return `https://api.etherscan.io/v2/api?chainid=${chainId}&module=contract&action=getsourcecode&address=${address}&apikey=${process.env.ETHERSCAN_API_KEY}`;
@@ -22,13 +18,12 @@ const copyContractFromEtherscan = async (
   address,
   challengeId
 ) => {
-  const etherscanV2Chainlist = await getEtherscanV2Chainlist();
-  const chain = etherscanV2Chainlist.find((chain) =>
+  const chain = SUPPORTED_CHAINS.find((chain) =>
     chain.blockexplorer.includes(blockExplorer)
   );
 
   if (!chain) {
-    throw new Error(`${blockExplorer} is not a valid block explorer`);
+    throw new Error(`${blockExplorer} is not a supported block explorer`);
   }
 
   const contractName = challenges[challengeId].contractName;
