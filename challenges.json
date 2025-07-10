@@ -52,5 +52,13 @@
     "contractName": "PredictionMarket",
     "telegram": "https://t.me/+NY00cDZ7PdBmNWEy",
     "successMessage": "<p>You have successfully passed the Prediction Markets Challenge! Great work!</p><p>--</p>"
+  },
+  {
+    "id": 7,
+    "name": "challenge-stablecoins",
+    "github": "https://github.com/scaffold-eth/se-2-challenges.git",
+    "contractName": "MyUSDEngine",
+    "telegram": "https://t.me/+y93US5WbP5dkNDFh",
+    "successMessage": "<p>You have successfully passed the Stablecoins Challenge! Great work!</p><p>--</p>"
   }
 ]
