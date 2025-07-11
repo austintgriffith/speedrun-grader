@@ -1,21 +1,29 @@
 require("dotenv").config();
 const axios = require("axios");
-const { VALID_BLOCK_EXPLORER_HOSTS, getContractCodeUrl } = require("./config");
 const fs = require("fs");
 const util = require("util");
 const { MESSAGES } = require("./messages");
 const { ethers } = require("ethers");
+const { SUPPORTED_CHAINS } = require("./supported-chains");
 const exec = util.promisify(require("child_process").exec);
 
 let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
+
+const getContractCodeUrl = (chainId, address) => {
+  return `https://api.etherscan.io/v2/api?chainid=${chainId}&module=contract&action=getsourcecode&address=${address}&apikey=${process.env.ETHERSCAN_API_KEY}`;
+};
 
 const copyContractFromEtherscan = async (
   blockExplorer,
   address,
   challengeId
 ) => {
-  if (!VALID_BLOCK_EXPLORER_HOSTS.includes(blockExplorer)) {
-    throw new Error(`${blockExplorer} is not a valid block explorer`);
+  const chain = SUPPORTED_CHAINS.find((chain) =>
+    chain.blockexplorer.includes(blockExplorer)
+  );
+
+  if (!chain) {
+    throw new Error(`${blockExplorer} is not a supported block explorer`);
   }
 
   const contractName = challenges[challengeId].contractName;
@@ -23,7 +31,7 @@ const copyContractFromEtherscan = async (
   let sourceCodeParsed;
   try {
     const response = await axios.get(
-      getContractCodeUrl(blockExplorer, address)
+      getContractCodeUrl(chain.chainid, address)
     );
     // The Etherscan API returns OK / NOTOK
     if (response.data.message !== "OK") {
@@ -130,10 +138,6 @@ const downloadAndTestContract = async (challengeId, blockExplorer, address) => {
     throw new Error(`Challenge "${challengeId}" not found.`);
   }
 
-  if (!VALID_BLOCK_EXPLORER_HOSTS.includes(blockExplorer)) {
-    throw new Error(`"${blockExplorer}" is not a valid block explorer.`);
-  }
-
   console.log(`📡 Downloading contract from ${blockExplorer}`);
 
   try {
@@ -151,6 +155,5 @@ const downloadAndTestContract = async (challengeId, blockExplorer, address) => {
 
 module.exports = {
   copyContractFromEtherscan,
-  VALID_BLOCK_EXPLORER_HOSTS,
   downloadAndTestContract,
 };
