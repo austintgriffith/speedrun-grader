@@ -4,7 +4,7 @@ const exec = util.promisify(require("child_process").exec);
 
 const challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
 
-const CREATE_ETH_STABLE_VERSION_FOR_CHALLENGES = "0.1.0";
+const CREATE_ETH_STABLE_VERSION_FOR_CHALLENGES = "1.0.0";
 const createEthVersion =
   process.argv[2] || CREATE_ETH_STABLE_VERSION_FOR_CHALLENGES;
 
