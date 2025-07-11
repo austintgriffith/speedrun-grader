@@ -1,4 +1,4 @@
-export const SUPPORTED_CHAINS = [
+module.exports.SUPPORTED_CHAINS = [
   {
     chainname: "Sepolia Testnet",
     chainid: "11155111",
