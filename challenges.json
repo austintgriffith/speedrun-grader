@@ -1,21 +1,21 @@
 [
   {
     "id": 0,
-    "name": "challenge-0-simple-nft",
+    "name": "challenge-simple-nft",
     "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "YourCollectible",
     "telegram": "https://t.me/+Y2vqXZZ_pEFhMGMx"
   },
   {
     "id": 1,
-    "name": "challenge-1-decentralized-staking",
+    "name": "challenge-decentralized-staking",
     "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "Staker",
     "telegram": "https://t.me/joinchat/E6r91UFt4oMJlt01"
   },
   {
     "id": 2,
-    "name": "challenge-2-token-vendor",
+    "name": "challenge-token-vendor",
     "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "Vendor",
     "telegram": "https://t.me/joinchat/IfARhZFc5bfPwpjq",
@@ -23,7 +23,7 @@
   },
   {
     "id": 3,
-    "name": "challenge-3-dice-game",
+    "name": "challenge-dice-game",
     "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "RiggedRoll",
     "telegram": "https://t.me/+3StA0aBSArFjNjUx",
@@ -31,7 +31,7 @@
   },
   {
     "id": 4,
-    "name": "challenge-4-dex",
+    "name": "challenge-dex",
     "github": "https://github.com/scaffold-eth/se-2-challenges.git",
     "contractName": "DEX",
     "telegram": "https://t.me/+_NeUIJ664Tc1MzIx",
