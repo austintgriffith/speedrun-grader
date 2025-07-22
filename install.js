@@ -1,68 +1,84 @@
-var fs = require("fs");
-const util = require("util");
-const exec = util.promisify(require("child_process").exec);
+const fs = require("fs");
+const path = require("path");
+const challenges = require("./challenges.js");
 
-const challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
+// Ensure hardhat/test directory exists
+const testDir = path.join(__dirname, "hardhat", "test");
+if (!fs.existsSync(testDir)) {
+  fs.mkdirSync(testDir, { recursive: true });
+}
 
-const CREATE_ETH_STABLE_VERSION_FOR_CHALLENGES = "0.1.0";
-const createEthVersion =
-  process.argv[2] || CREATE_ETH_STABLE_VERSION_FOR_CHALLENGES;
+// Function to download a file from a URL
+async function downloadFile(url, destinationPath) {
+  const response = await fetch(url);
 
-const setupChallenge = async (challenge) => {
-  try {
-    const tempFolder = `${challenge.name}_temp`;
-
-    if (fs.existsSync(tempFolder)) {
-      console.log(`🗑  Removing old temporary folder of ${challenge.name}`);
-      fs.rmSync(tempFolder, { recursive: true, force: true });
-    }
-
-    console.log(`📦 Installing ${challenge.name} to temporary folder`);
-    const result1 = await exec(
-      `npx --yes create-eth@${createEthVersion} -s hardhat -e scaffold-eth/se-2-challenges:${challenge.name} ${tempFolder}`
+  if (!response.ok) {
+    throw new Error(
+      `Failed to download ${url}: ${response.status} ${response.statusText}`
     );
-    // console.log(`stdout: ${result1.stdout}\n`);
+  }
 
-    if (result1.stderr) {
-      console.log(`stderr: ${result1.stderr}\n`);
-    }
+  const content = await response.text();
+  fs.writeFileSync(destinationPath, content);
+}
 
-    // If installation was successful, swap the folders
-    if (fs.existsSync(tempFolder)) {
-      if (fs.existsSync(`./${challenge.name}`)) {
-        console.log(`🗑  Removing old ${challenge.name} folder`);
-        fs.rmSync(`./${challenge.name}`, { recursive: true, force: true });
-      }
+// Function to convert GitHub repo URL to raw URL format
+function getGitHubRawUrl(repoUrl, filePath, branchName) {
+  // Convert from https://github.com/owner/repo.git to https://raw.githubusercontent.com/owner/repo/branchName/
+  const match = repoUrl.match(/https:\/\/github\.com\/([^\/]+)\/([^\/]+)\.git/);
+  if (!match) {
+    throw new Error(`Invalid GitHub URL format: ${repoUrl}`);
+  }
 
-      console.log(`📂 Moving new installation to final location`);
-      fs.renameSync(tempFolder, `./${challenge.name}`);
-    }
-  } catch (e) {
-    console.log(`❌ Error installing ${challenge.name}:`, e);
-    // Clean up temp folder if it exists
-    if (fs.existsSync(`./${challenge.name}_temp`)) {
-      fs.rmSync(`./${challenge.name}_temp`, { recursive: true, force: true });
+  const [, owner, repo] = match;
+  return `https://raw.githubusercontent.com/${owner}/${repo}/refs/heads/${branchName}/${filePath}`;
+}
+
+// Main function to download all test files
+async function downloadAllTestFiles() {
+  console.log("Starting download of test files...\n");
+
+  const challengeEntries = Object.entries(challenges);
+  let successCount = 0;
+  let failCount = 0;
+
+  for (const [challengeId, challengeData] of challengeEntries) {
+    try {
+      console.log(`Downloading test for ${challengeId}...`);
+
+      // Construct the file path in the repo
+      const repoFilePath = `extension/packages/hardhat/test/${challengeData.testName}`;
+
+      // Get the raw GitHub URL
+      const downloadUrl = getGitHubRawUrl(
+        challengeData.github,
+        repoFilePath,
+        challengeData.name
+      );
+
+      // Destination file path
+      const destinationPath = path.join(testDir, `${challengeId}.ts`);
+
+      console.log(`  From: ${downloadUrl}`);
+      console.log(`  To: ${destinationPath}`);
+
+      // Download the file
+      await downloadFile(downloadUrl, destinationPath);
+
+      console.log(`  ✅ Successfully downloaded ${challengeId}\n`);
+      successCount++;
+    } catch (error) {
+      console.error(
+        `  ❌ Failed to download ${challengeId}: ${error.message}\n`
+      );
+      failCount++;
     }
   }
-};
 
-(async () => {
-  for (let c in challenges) {
-    let challenge = challenges[c];
-    console.log(
-      `\n📋 Processing challenge ${c}/${Object.keys(challenges).length}:`
-    );
+  console.log("Download complete!");
+  console.log(`Successfully downloaded: ${successCount} files`);
+  console.log(`Failed downloads: ${failCount} files`);
+}
 
-    console.log(`🔍 Challenge ${c} details:`, challenge);
-
-    // Skip if challenge folder already exists
-    if (fs.existsSync(`./${challenge.name}`)) {
-      console.log(`📁 Challenge ${c} folder already exists, skipping`);
-      continue;
-    }
-
-    await setupChallenge(challenge);
-    console.log(`✅ Challenge ${c} installation completed`);
-  }
-  console.log("✨ All challenge installations completed!");
-})();
+// Run the script
+downloadAllTestFiles().catch(console.error);
