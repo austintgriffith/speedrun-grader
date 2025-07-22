@@ -7,7 +7,7 @@ const { ethers } = require("ethers");
 const { SUPPORTED_CHAINS } = require("./supported-chains");
 const exec = util.promisify(require("child_process").exec);
 
-let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
+const challenges = require("../challenges");
 
 const getContractCodeUrl = (chainId, address) => {
   return `https://api.etherscan.io/v2/api?chainid=${chainId}&module=contract&action=getsourcecode&address=${address}&apikey=${process.env.ETHERSCAN_API_KEY}`;
@@ -133,7 +133,6 @@ const downloadAndTestContract = async (challengeId, blockExplorer, address) => {
   }
 
   console.log(`📡 Downloading contract from ${blockExplorer}`);
-
   try {
     await copyContractFromEtherscan(blockExplorer, address, challengeId);
   } catch (e) {

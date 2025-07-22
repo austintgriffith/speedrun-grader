@@ -9,7 +9,7 @@ const exec = util.promisify(require("child_process").exec);
 const { downloadAndTestContract } = require("./utils/contract");
 const { MESSAGES } = require("./utils/messages");
 
-let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
+const challenges = require("./challenges");
 
 app.use(cors());
 
@@ -18,15 +18,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", async function (req, res) {
   res.status(200).send("HELLO WORLD!");
-});
-
-app.get("/address", async function (req, res) {
-  const { stdout, stderr } = await exec(
-    "cd " + challenges[0].name + " && yarn account"
-  );
-  console.log(`stdout: ${stdout}`);
-  console.log(`stderr: ${stderr}`);
-  res.status(200).send(stdout);
 });
 
 // For testing purposes.
