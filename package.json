@@ -4,19 +4,33 @@
     "body-parser": "^1.19.1",
     "cors": "^2.8.5",
     "dotenv": "^11.0.0",
-    "ethers": "^5.7.0",
+    "ethers": "^6.13.2",
     "express": "^4.17.2",
     "https": "^1.0.0",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.9.1",
+    "typechain": "^8.3.2",
+    "typescript": "^5.8.2"
   },
   "scripts": {
     "server": "nodemon index",
-    "install-challenges": "node install.js"
+    "install-challenges": "node install.js",
+    "compile": "hardhat compile",
+    "test": "REPORT_GAS=true hardhat test --network hardhat"
   },
   "nodemonConfig": {
     "ignore": [
       "challenge-*/*"
     ]
   },
-  "packageManager": "yarn@3.2.3"
+  "packageManager": "yarn@3.2.3",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.7",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@openzeppelin/contracts": "^4.9.5",
+    "@types/chai": "^5.2.2",
+    "chai": "^4.5.0",
+    "hardhat": "^2.22.10",
+    "hardhat-gas-reporter": "^2.2.1"
+  }
 }
