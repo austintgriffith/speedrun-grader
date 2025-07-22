@@ -75,7 +75,7 @@ const copyContractFromEtherscan = async (
     }
 
     await fs.writeFileSync(
-      `${challenges[challengeId].name}/packages/hardhat/contracts/download-${address}.sol`,
+      `hardhat/contracts/download-${address}.sol`,
       sourceCodeParsed
     );
 
@@ -116,21 +116,15 @@ const testChallenge = async ({ challenge, blockExplorer, address }) => {
   }
 
   // Delete files. Don't need to await.
-  exec(
-    `rm -f ${challenge.name}/packages/hardhat/contracts/download-${address}.sol`
-  );
-  exec(
-    `rm -rf ${challenge.name}/packages/hardhat/artifacts/contracts/download-${address}.sol`
-  );
-  exec(
-    `rm -f ${challenge.name}/packages/hardhat/cache/solidity-files-cache.json`
-  );
+  exec(`rm -f hardhat/contracts/download-${address}.sol`);
+  exec(`rm -rf hardhat/artifacts/contracts/download-${address}.sol`);
+  exec(`rm -f hardhat/cache/solidity-files-cache.json`);
 
   return result;
 };
 
 const downloadAndTestContract = async (challengeId, blockExplorer, address) => {
-  if (!ethers.utils.isAddress(address)) {
+  if (!ethers.isAddress(address)) {
     throw new Error(`${address} is not a valid address.`);
   }
 
