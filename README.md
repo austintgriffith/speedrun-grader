@@ -6,7 +6,7 @@
 
 - [ ] Openzepplin version on simple-nft challenge (it's the only one)
 - [ ] YourTokenAutograder.sol / YourToken.sol should be the same? As dex?
-- [ ] stablecoins challenges: fetch price for uniswap not needed?? use 2600n \* 10n \*\* 18n
+- [x] stablecoins challenge: fetch price for uniswap not needed?? use 2600n \* 10n \*\* 18n
 - [ ] Update README
 
 ---
