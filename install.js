@@ -119,8 +119,6 @@ async function downloadAllTestFiles() {
         }
       }
     }
-
-    console.log(""); // Add spacing between challenges
   }
 
   console.log("Download complete!");
