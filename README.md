@@ -1,5 +1,16 @@
 # speedrun-grader
 
+---
+
+### TODO:
+
+- [ ] Openzepplin version on simple-nft challenge (it's the only one)
+- [ ] YourTokenAutograder.sol / YourToken.sol should be the same? As dex?
+- [ ] stablecoins challenges: fetch price for uniswap not needed?? use 2600n \* 10n \*\* 18n
+- [ ] Update README
+
+---
+
 Grade verified live contracts on the hardhat network.
 
 ```
@@ -61,3 +72,5 @@ Content-Type: application/json
 ```
 
 On a live server, you might want to run the main script `index.js` with something like `pm2`
+
+---
