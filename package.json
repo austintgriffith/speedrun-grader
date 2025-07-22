@@ -4,7 +4,7 @@
     "body-parser": "^1.19.1",
     "cors": "^2.8.5",
     "dotenv": "^11.0.0",
-    "ethers": "^6.13.2",
+    "ethers": "^5.7.0",
     "express": "^4.17.2",
     "https": "^1.0.0",
     "nodemon": "^2.0.15",
@@ -13,10 +13,10 @@
     "typescript": "^5.8.2"
   },
   "scripts": {
-    "server": "nodemon index",
+    "server": "nodemon --ignore hardhat/",
     "install-challenges": "node install.js",
-    "compile": "hardhat compile",
-    "test": "REPORT_GAS=true hardhat test --network hardhat"
+    "compile": "cd hardhat && hardhat compile",
+    "test": "cd hardhat && REPORT_GAS=true hardhat test --network hardhat"
   },
   "nodemonConfig": {
     "ignore": [
@@ -29,6 +29,7 @@
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@openzeppelin/contracts": "^4.9.5",
     "@types/chai": "^5.2.2",
+    "@types/mocha": "~10.0.8",
     "chai": "^4.5.0",
     "hardhat": "^2.22.10",
     "hardhat-gas-reporter": "^2.2.1"

@@ -98,7 +98,7 @@ const testChallenge = async ({ challenge, blockExplorer, address }) => {
     console.log(`🚀 Running ${challenge.name}`);
 
     const { stdout } = await exec(
-      "cd " + challenge.name + " && CONTRACT_ADDRESS=" + address + " yarn test"
+      `CONTRACT_ADDRESS=${address} yarn test test/${challenge.name}`
     );
 
     console.log("✅ Tests passed successfully!\n");
