@@ -3,7 +3,7 @@ const challenges = {
     name: "challenge-simple-nft",
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
     contractName: "YourCollectible",
-    testName: "Challenge0.ts",
+    testName: "YourCollectible.ts",
     telegram: "https://t.me/+Y2vqXZZ_pEFhMGMx",
   },
   "challenge-decentralized-staking": {
@@ -11,7 +11,7 @@ const challenges = {
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
     contractName: "Staker",
     requiredInitialContracts: ["ExampleExternalContract.sol"],
-    testName: "Challenge1.ts",
+    testName: "Staker.ts",
     telegram: "https://t.me/joinchat/E6r91UFt4oMJlt01",
   },
   "challenge-token-vendor": {
@@ -19,7 +19,7 @@ const challenges = {
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
     contractName: "Vendor",
     requiredInitialContracts: ["YourToken.sol"],
-    testName: "Challenge2.ts",
+    testName: "Vendor.ts",
     telegram: "https://t.me/joinchat/IfARhZFc5bfPwpjq",
     successMessage:
       "<p>You have successfully passed the token vendor challenge!</p><p>--</p>",
@@ -29,7 +29,7 @@ const challenges = {
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
     contractName: "RiggedRoll",
     requiredInitialContracts: ["DiceGame.sol"],
-    testName: "Challenge3.ts",
+    testName: "RiggedRoll.ts",
     telegram: "https://t.me/+3StA0aBSArFjNjUx",
     successMessage:
       "<p>This looks good! Demo site and contract code are solid and the dice only roll when it's a winner!</p><p>--</p>",
@@ -39,7 +39,7 @@ const challenges = {
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
     contractName: "DEX",
     requiredInitialContracts: ["Balloons.sol"],
-    testName: "Challenge4.ts",
+    testName: "DEX.ts",
     telegram: "https://t.me/+_NeUIJ664Tc1MzIx",
     successMessage:
       "<p>You have successfully passed the Dex Challenge! Great work!</p><p>--</p>",
