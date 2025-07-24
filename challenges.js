@@ -49,7 +49,7 @@ const challenges = {
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
     contractName: "Lending",
     requiredInitialContracts: ["Corn.sol", "CornDEX.sol"],
-    testName: "OverCollateralizedLending.ts",
+    testName: "Lending.ts",
     telegram: "https://t.me/+xQr5d-oVhLMwZmUx",
     successMessage:
       "<p>You have successfully passed the Over-collateralized Lending Challenge! Great work!</p><p>--</p>",
