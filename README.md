@@ -26,7 +26,7 @@ yarn server
 
 now visit http://localhost:54727/
 
-- For pretty feedback, visit: http://localhost:54727/challenge-simple-nft/sepolia.etherscan.io/0xC7f0fd7ceBE69A3c4Ef28f7978bc5951064772f8
+- For pretty feedback, visit: http://localhost:54727/challenge-simple-nft-example/sepolia.etherscan.io/0xC7f0fd7ceBE69A3c4Ef28f7978bc5951064772f8
 - The main API endpoint is a POST to http://localhost:54727/. E.g:
 
 ```
@@ -34,7 +34,7 @@ POST http://localhost:54727
 Content-Type: application/json
 
 {
-  "challenge": "challenge-simple-nft",
+  "challenge": "challenge-simple-nft-example",
   "blockExplorer": "sepolia.etherscan.io",
   "address": "0xC7f0fd7ceBE69A3c4Ef28f7978bc5951064772f8"
 }
