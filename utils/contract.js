@@ -7,7 +7,7 @@ const { ethers } = require("ethers");
 const { SUPPORTED_CHAINS } = require("./supported-chains");
 const exec = util.promisify(require("child_process").exec);
 
-let challenges = JSON.parse(fs.readFileSync("challenges.json").toString());
+const challenges = require("../challenges");
 
 const getContractCodeUrl = (chainId, address) => {
   return `https://api.etherscan.io/v2/api?chainid=${chainId}&module=contract&action=getsourcecode&address=${address}&apikey=${process.env.ETHERSCAN_API_KEY}`;
@@ -75,7 +75,7 @@ const copyContractFromEtherscan = async (
     }
 
     await fs.writeFileSync(
-      `${challenges[challengeId].name}/packages/hardhat/contracts/download-${address}.sol`,
+      `hardhat/contracts/download-${address}.sol`,
       sourceCodeParsed
     );
 
@@ -98,7 +98,7 @@ const testChallenge = async ({ challenge, blockExplorer, address }) => {
     console.log(`🚀 Running ${challenge.name}`);
 
     const { stdout } = await exec(
-      "cd " + challenge.name + " && CONTRACT_ADDRESS=" + address + " yarn test"
+      `CONTRACT_ADDRESS=${address} yarn test test/${challenge.name}`
     );
 
     console.log("✅ Tests passed successfully!\n");
@@ -116,21 +116,15 @@ const testChallenge = async ({ challenge, blockExplorer, address }) => {
   }
 
   // Delete files. Don't need to await.
-  exec(
-    `rm -f ${challenge.name}/packages/hardhat/contracts/download-${address}.sol`
-  );
-  exec(
-    `rm -rf ${challenge.name}/packages/hardhat/artifacts/contracts/download-${address}.sol`
-  );
-  exec(
-    `rm -f ${challenge.name}/packages/hardhat/cache/solidity-files-cache.json`
-  );
+  exec(`rm -f hardhat/contracts/download-${address}.sol`);
+  exec(`rm -rf hardhat/artifacts/contracts/download-${address}.sol`);
+  exec(`rm -f hardhat/cache/solidity-files-cache.json`);
 
   return result;
 };
 
 const downloadAndTestContract = async (challengeId, blockExplorer, address) => {
-  if (!ethers.utils.isAddress(address)) {
+  if (!ethers.isAddress(address)) {
     throw new Error(`${address} is not a valid address.`);
   }
 
@@ -139,7 +133,6 @@ const downloadAndTestContract = async (challengeId, blockExplorer, address) => {
   }
 
   console.log(`📡 Downloading contract from ${blockExplorer}`);
-
   try {
     await copyContractFromEtherscan(blockExplorer, address, challengeId);
   } catch (e) {

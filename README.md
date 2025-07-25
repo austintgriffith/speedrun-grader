@@ -10,33 +10,13 @@ yarn install
 
 Copy `.env.example` to `.env` and put in your [Etherscan API Key](https://etherscan.io/apis).
 
-To download all the challenges specified on `challenges.json`, run:
+To download all the test files and contracts for the challenges specified on `challenges.ts`, run:
 
 ```
-yarn install-challenges <create-eth version>
+yarn install-challenges
 ```
 
-The `create-eth version` parameter is optional and should only be used for development purposes. If omitted, the latest stable create-eth version for extensions will be used.
-
-You can rerun the install anytime to update all the repos.
-
-**Note**: For challenge 2, you have to manually create a `YourTokenAutograder.sol` file inside `challenge-2-token-vendor/packages/hardhat/contracts`
-
-```solidity
-pragma solidity 0.8.20; // Do not change the solidity version as it negativly impacts submission grading
-// SPDX-License-Identifier: MIT
-
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-contract YourToken is ERC20 {
-    constructor() ERC20("Gold", "GLD") {
-        _mint( msg.sender, 1000 * 10 ** 18);
-    }
-}
-
-```
-
----
+You can rerun the install anytime to update all the test files and contracts.
 
 For local dev, you can run:
 
@@ -46,7 +26,7 @@ yarn server
 
 now visit http://localhost:54727/
 
-- For pretty feedback, visit: http://localhost:54727/0/sepolia.etherscan.io/0x6976571037372EeDF61Ca174b0eca4f6995d9d04
+- For pretty feedback, visit: http://localhost:54727/challenge-simple-nft-example/sepolia.etherscan.io/0xC7f0fd7ceBE69A3c4Ef28f7978bc5951064772f8
 - The main API endpoint is a POST to http://localhost:54727/. E.g:
 
 ```
@@ -54,10 +34,12 @@ POST http://localhost:54727
 Content-Type: application/json
 
 {
-  "challenge": 0,
+  "challenge": "challenge-simple-nft-example",
   "blockExplorer": "sepolia.etherscan.io",
-  "address": "0x6976571037372EeDF61Ca174b0eca4f6995d9d04"
+  "address": "0xC7f0fd7ceBE69A3c4Ef28f7978bc5951064772f8"
 }
 ```
 
 On a live server, you might want to run the main script `index.js` with something like `pm2`
+
+---
