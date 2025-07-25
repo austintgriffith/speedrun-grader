@@ -34,7 +34,7 @@ const challenges = {
     successMessage:
       "<p>This looks good! Demo site and contract code are solid and the dice only roll when it's a winner!</p><p>--</p>",
   },
-  "challenge-dex": {
+  "challenge-minimum-viable-exchange": {
     name: "challenge-dex",
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
     contractName: "DEX",
