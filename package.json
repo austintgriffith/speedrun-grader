@@ -14,7 +14,6 @@
   },
   "scripts": {
     "server": "nodemon --ignore hardhat/",
-    "install-challenges": "node install.js",
     "compile": "cd hardhat && hardhat compile",
     "test": "cd hardhat && REPORT_GAS=true hardhat test --network hardhat"
   },
