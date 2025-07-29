@@ -1,6 +1,22 @@
 const fs = require("fs");
 const path = require("path");
+const readline = require("readline");
 const challenges = require("./challenges.js");
+
+// Create readline interface for user input
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+// Function to ask user for confirmation
+function askConfirmation(message) {
+  return new Promise((resolve) => {
+    rl.question(`${message} (y/N): `, (answer) => {
+      resolve(answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");
+    });
+  });
+}
 
 // Parse command line arguments
 function parseArgs() {
@@ -14,6 +30,8 @@ function parseArgs() {
     } else if (args[i] === "--help" || args[i] === "-h") {
       showHelp();
       process.exit(0);
+    } else if (args[i] === "--force" || args[i] === "-f") {
+      options.force = true;
     }
   }
 
@@ -29,6 +47,9 @@ function showHelp() {
   console.log("Options:");
   console.log(
     "  --challenge <challengeId>  Download files for a specific challenge only"
+  );
+  console.log(
+    "  --force, -f                Skip confirmation prompts and overwrite existing files"
   );
   console.log("  --help, -h                 Show this help message");
   console.log("");
@@ -104,6 +125,8 @@ async function downloadAllTestFiles(options = {}) {
   let testFailCount = 0;
   let contractSuccessCount = 0;
   let contractFailCount = 0;
+  let testSkippedCount = 0;
+  let contractSkippedCount = 0;
 
   for (const [challengeId, challengeData] of challengeEntries) {
     try {
@@ -125,11 +148,26 @@ async function downloadAllTestFiles(options = {}) {
       console.log(`\tFrom: ${downloadUrl}`);
       console.log(`\tTo: ${destinationPath}`);
 
-      // Download the file
-      await downloadFile(downloadUrl, destinationPath);
-
-      console.log(`\t✅ Successfully downloaded test ${challengeId}\n\n`);
-      testSuccessCount++;
+      // Check if file exists and ask for confirmation if needed
+      if (fs.existsSync(destinationPath) && !options.force) {
+        const shouldOverwrite = await askConfirmation(
+          `\t⚠️  File ${challengeId}.ts already exists. Overwrite?`
+        );
+        if (!shouldOverwrite) {
+          console.log(`\t⏭️  Skipped ${challengeId} test file\n`);
+          testSkippedCount++;
+        } else {
+          // Download the file
+          await downloadFile(downloadUrl, destinationPath);
+          console.log(`\t✅ Successfully downloaded test ${challengeId}\n`);
+          testSuccessCount++;
+        }
+      } else {
+        // Download the file
+        await downloadFile(downloadUrl, destinationPath);
+        console.log(`\t✅ Successfully downloaded test ${challengeId}\n`);
+        testSuccessCount++;
+      }
     } catch (error) {
       console.error(
         `\t❌ Failed to download test ${challengeId}: ${error.message}`
@@ -159,13 +197,30 @@ async function downloadAllTestFiles(options = {}) {
           console.log(`\tContract From: ${contractDownloadUrl}`);
           console.log(`\tContract To: ${contractDestinationPath}`);
 
-          // Download the contract file
-          await downloadFile(contractDownloadUrl, contractDestinationPath);
-
-          console.log(
-            `\t✅ Successfully downloaded contract ${contractFile}\n\n`
-          );
-          contractSuccessCount++;
+          // Check if contract file exists and ask for confirmation if needed
+          if (fs.existsSync(contractDestinationPath) && !options.force) {
+            const shouldOverwrite = await askConfirmation(
+              `\t⚠️  Contract ${contractFile} already exists. Overwrite?`
+            );
+            if (!shouldOverwrite) {
+              console.log(`\t⏭️  Skipped contract ${contractFile}\n`);
+              contractSkippedCount++;
+            } else {
+              // Download the contract file
+              await downloadFile(contractDownloadUrl, contractDestinationPath);
+              console.log(
+                `\t✅ Successfully downloaded contract ${contractFile}\n`
+              );
+              contractSuccessCount++;
+            }
+          } else {
+            // Download the contract file
+            await downloadFile(contractDownloadUrl, contractDestinationPath);
+            console.log(
+              `\t✅ Successfully downloaded contract ${contractFile}\n`
+            );
+            contractSuccessCount++;
+          }
         } catch (error) {
           console.error(
             `\t❌ Failed to download contract ${contractFile}: ${error.message}`
@@ -176,13 +231,22 @@ async function downloadAllTestFiles(options = {}) {
     }
   }
 
+  // Close readline interface
+  rl.close();
+
   console.log("Download complete!");
   console.log(`Successfully downloaded: ${testSuccessCount} test files`);
   console.log(`Failed test downloads: ${testFailCount} files`);
+  if (testSkippedCount > 0) {
+    console.log(`Skipped test files: ${testSkippedCount} files`);
+  }
   console.log(
     `Successfully downloaded: ${contractSuccessCount} contract files`
   );
   console.log(`Failed contract downloads: ${contractFailCount} files`);
+  if (contractSkippedCount > 0) {
+    console.log(`Skipped contract files: ${contractSkippedCount} files`);
+  }
 }
 
 // Run the script
