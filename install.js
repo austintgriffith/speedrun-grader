@@ -205,22 +205,16 @@ async function downloadAllTestFiles(options = {}) {
             if (!shouldOverwrite) {
               console.log(`\t⏭️  Skipped contract ${contractFile}\n`);
               contractSkippedCount++;
-            } else {
-              // Download the contract file
-              await downloadFile(contractDownloadUrl, contractDestinationPath);
-              console.log(
-                `\t✅ Successfully downloaded contract ${contractFile}\n`
-              );
-              contractSuccessCount++;
+              continue;
             }
-          } else {
-            // Download the contract file
-            await downloadFile(contractDownloadUrl, contractDestinationPath);
-            console.log(
-              `\t✅ Successfully downloaded contract ${contractFile}\n`
-            );
-            contractSuccessCount++;
           }
+
+          // Download the contract file
+          await downloadFile(contractDownloadUrl, contractDestinationPath);
+          console.log(
+            `\t✅ Successfully downloaded contract ${contractFile}\n`
+          );
+          contractSuccessCount++;
         } catch (error) {
           console.error(
             `\t❌ Failed to download contract ${contractFile}: ${error.message}`
