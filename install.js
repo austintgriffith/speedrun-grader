@@ -2,6 +2,61 @@ const fs = require("fs");
 const path = require("path");
 const challenges = require("./challenges.js");
 
+// Parse command line arguments
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const options = {};
+
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--challenge" && i + 1 < args.length) {
+      options.challenge = args[i + 1];
+      i++; // Skip the next argument since it's the value
+    } else if (args[i] === "--help" || args[i] === "-h") {
+      showHelp();
+      process.exit(0);
+    }
+  }
+
+  return options;
+}
+
+function showHelp() {
+  console.log("SpeedRun Grader Install Script");
+  console.log("==============================");
+  console.log("");
+  console.log("Usage: node install.js [options]");
+  console.log("");
+  console.log("Options:");
+  console.log(
+    "  --challenge <challengeId>  Download files for a specific challenge only"
+  );
+  console.log("  --help, -h                 Show this help message");
+  console.log("");
+  console.log("Available challenges:");
+  Object.keys(challenges).forEach((challengeId) => {
+    console.log(`  - ${challengeId}`);
+  });
+}
+
+function getFilteredChallenges(options) {
+  if (options.challenge) {
+    if (!challenges[options.challenge]) {
+      console.error(`❌ Error: Challenge '${options.challenge}' not found.`);
+      console.log("\nAvailable challenges:");
+      Object.keys(challenges).forEach((challengeId) => {
+        console.log(`  - ${challengeId}`);
+      });
+      process.exit(1);
+    }
+
+    console.log(`📦 Installing files for challenge: ${options.challenge}\n`);
+    return { [options.challenge]: challenges[options.challenge] };
+  }
+
+  console.log("📦 Installing files for all challenges...\n");
+  return challenges;
+}
+
 // Ensure hardhat/test directory exists
 const testDir = path.join(__dirname, "hardhat", "test");
 if (!fs.existsSync(testDir)) {
@@ -41,10 +96,10 @@ function getGitHubRawUrl(repoUrl, filePath, branchName) {
 }
 
 // Main function to download all test files and contracts
-async function downloadAllTestFiles() {
-  console.log("Starting download of test files and contracts...\n");
+async function downloadAllTestFiles(options = {}) {
+  const filteredChallenges = getFilteredChallenges(options);
 
-  const challengeEntries = Object.entries(challenges);
+  const challengeEntries = Object.entries(filteredChallenges);
   let testSuccessCount = 0;
   let testFailCount = 0;
   let contractSuccessCount = 0;
@@ -131,4 +186,5 @@ async function downloadAllTestFiles() {
 }
 
 // Run the script
-downloadAllTestFiles().catch(console.error);
+const options = parseArgs();
+downloadAllTestFiles(options).catch(console.error);

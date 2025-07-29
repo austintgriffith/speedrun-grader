@@ -13,10 +13,15 @@ Copy `.env.example` to `.env` and put in your [Etherscan API Key](https://ethers
 To download all the test files and contracts for the challenges specified on `challenges.ts`, run:
 
 ```
-yarn install-challenges
+node install.js
 ```
 
-You can rerun the install anytime to update all the test files and contracts.
+You can rerun the install anytime to update all the test files and contracts. If you just want to download a specific challenge, you can run:
+
+```
+node install.js --challenge challenge-simple-nft-example
+# you can run node install.js --help to see all the available challenges and options
+```
 
 For local dev, you can run:
 
