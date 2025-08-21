@@ -45,6 +45,18 @@ Content-Type: application/json
 }
 ```
 
+- There's also an authenticated install endpoint. E.g:
+
+```
+POST http://localhost:54727/install
+Content-Type: application/json
+x-api-key: YOUR_API_KEY
+
+{
+  "challengeId": "challenge-simple-nft-example"
+}
+```
+
 On a live server, you might want to run the main script `index.js` with something like `pm2`
 
 ---

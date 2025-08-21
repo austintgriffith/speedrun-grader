@@ -8,6 +8,7 @@ const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 const { downloadAndTestContract } = require("./utils/contract");
 const { MESSAGES } = require("./utils/messages");
+require("dotenv").config();
 
 const challenges = require("./challenges");
 
@@ -15,6 +16,29 @@ app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// API Key authentication middleware
+function authenticateApiKey(req, res, next) {
+  const apiKey =
+    req.headers["x-api-key"] ||
+    req.headers["authorization"]?.replace("Bearer ", "");
+  const validApiKey = process.env.API_KEY;
+
+  if (!validApiKey) {
+    return res.status(500).json({
+      error:
+        "Server configuration error: API_KEY not set in environment variables",
+    });
+  }
+
+  if (!apiKey || apiKey !== validApiKey) {
+    return res.status(401).json({
+      error: "Unauthorized: Invalid or missing API key",
+    });
+  }
+
+  next();
+}
 
 app.get("/", async function (req, res) {
   res.status(200).send("HELLO WORLD!");
@@ -65,6 +89,57 @@ app.post("/", async function (req, res) {
   }
 
   return res.json(result);
+});
+
+// Install/Update challenge endpoint with API key authentication
+app.post("/install", authenticateApiKey, async function (req, res) {
+  console.log("⚙️ POST /install", req.body);
+  const { challengeId } = req.body;
+
+  if (!challengeId) {
+    return res.status(400).json({
+      error: "Missing required parameter: challengeId",
+      availableChallenges: Object.keys(challenges),
+    });
+  }
+
+  if (!challenges[challengeId]) {
+    return res.status(400).json({
+      error: `Invalid challengeId: ${challengeId}`,
+      availableChallenges: Object.keys(challenges),
+    });
+  }
+
+  try {
+    console.log(`🔄 Installing/updating challenge: ${challengeId}`);
+
+    // Execute the install command with force flag to avoid interactive prompts
+    const command = `node install.js --challenge ${challengeId} --force`;
+    const { stdout } = await exec(command, {
+      cwd: __dirname,
+      timeout: 120000, // 2 minutes timeout
+    });
+
+    console.log(`✅ Install completed for ${challengeId}`);
+
+    return res.json({
+      success: true,
+      message: `Successfully installed/updated challenge: ${challengeId}`,
+      challengeId,
+      output: stdout,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error(`❌ Install failed for ${challengeId}:`, error.message);
+
+    return res.status(500).json({
+      success: false,
+      error: `Failed to install/update challenge: ${challengeId}`,
+      details: error.message,
+      challengeId,
+      timestamp: new Date().toISOString(),
+    });
+  }
 });
 
 if (fs.existsSync("server.key") && fs.existsSync("server.cert")) {
