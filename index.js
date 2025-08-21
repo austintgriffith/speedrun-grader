@@ -117,7 +117,7 @@ app.post("/install", authenticateApiKey, async function (req, res) {
     const command = `node install.js --challenge ${challengeId} --force`;
     const { stdout } = await exec(command, {
       cwd: __dirname,
-      timeout: 120000, // 2 minutes timeout
+      timeout: 30_000, // 30 seconds
     });
 
     console.log(`✅ Install completed for ${challengeId}`);
