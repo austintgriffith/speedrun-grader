@@ -122,13 +122,65 @@ app.post("/install", authenticateApiKey, async function (req, res) {
 
     console.log(`✅ Install completed for ${challengeId}`);
 
-    return res.json({
+    const responseData = {
       success: true,
       message: `Successfully installed/updated challenge: ${challengeId}`,
       challengeId,
       output: stdout,
       timestamp: new Date().toISOString(),
-    });
+    };
+
+    // Send the response immediately
+    res.json(responseData);
+
+    // Restart PM2 process after successful installation (if enabled) - with delay
+    const pm2ProcessName = process.env.PM2_PROCESS_NAME || "index";
+    const enablePm2Restart = process.env.ENABLE_PM2_RESTART !== "false"; // Default to true
+    const restartDelay = parseInt(process.env.PM2_RESTART_DELAY || "1000"); // Default 1 second delay
+
+    console.log(
+      `🔧 PM2 Restart Config: enabled=${enablePm2Restart}, processName=${pm2ProcessName}, delay=${restartDelay}ms`
+    );
+
+    if (enablePm2Restart) {
+      // Use setTimeout to restart after response is sent
+      setTimeout(async () => {
+        try {
+          console.log(`🔄 Restarting PM2 process: ${pm2ProcessName}...`);
+          const pm2Command = `pm2 restart ${pm2ProcessName}`;
+          const { stdout: pm2Output, stderr: pm2Error } = await exec(
+            pm2Command,
+            {
+              timeout: 10_000, // 10 seconds timeout for PM2 restart
+            }
+          );
+          console.log(`✅ PM2 restart completed successfully!`);
+          console.log(`📋 PM2 stdout:`, pm2Output);
+          if (pm2Error) {
+            console.log(`📋 PM2 stderr:`, pm2Error);
+          }
+        } catch (pm2Error) {
+          console.warn(
+            `⚠️ PM2 restart failed (non-critical):`,
+            pm2Error.message
+          );
+          console.warn(`⚠️ PM2 restart stderr:`, pm2Error.stderr);
+          // Try to get PM2 process list to help debug
+          try {
+            const { stdout: listOutput } = await exec("pm2 list", {
+              timeout: 5000,
+            });
+            console.log(`📋 Current PM2 processes:`, listOutput);
+          } catch (listError) {
+            console.warn(`⚠️ Could not get PM2 list:`, listError.message);
+          }
+        }
+      }, restartDelay);
+    } else {
+      console.log(`⏭️ PM2 restart disabled via ENABLE_PM2_RESTART=false`);
+    }
+
+    // Note: We already sent the response above, so we don't return anything here
   } catch (error) {
     console.error(`❌ Install failed for ${challengeId}:`, error.message);
 
