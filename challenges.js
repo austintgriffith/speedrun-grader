@@ -1,6 +1,6 @@
 const challenges = {
-  "challenge-simple-nft-example": {
-    name: "challenge-simple-nft-example",
+  "challenge-tokenization": {
+    name: "challenge-tokenization",
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
     contractName: "YourCollectible",
     testName: "YourCollectible.ts",

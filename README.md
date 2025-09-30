@@ -19,7 +19,7 @@ node install.js
 You can rerun the install anytime to update all the test files and contracts. If you just want to download a specific challenge, you can run:
 
 ```
-node install.js --challenge challenge-simple-nft-example
+node install.js --challenge challenge-tokenization
 # you can run node install.js --help to see all the available challenges and options
 ```
 
@@ -31,7 +31,7 @@ yarn server
 
 now visit http://localhost:54727/
 
-- For pretty feedback, visit: http://localhost:54727/challenge-simple-nft-example/sepolia.etherscan.io/0xC7f0fd7ceBE69A3c4Ef28f7978bc5951064772f8
+- For pretty feedback, visit: http://localhost:54727/challenge-tokenization/sepolia.etherscan.io/0xC7f0fd7ceBE69A3c4Ef28f7978bc5951064772f8
 - The main API endpoint is a POST to http://localhost:54727/. E.g:
 
 ```
@@ -39,7 +39,7 @@ POST http://localhost:54727
 Content-Type: application/json
 
 {
-  "challenge": "challenge-simple-nft-example",
+  "challenge": "challenge-tokenization",
   "blockExplorer": "sepolia.etherscan.io",
   "address": "0xC7f0fd7ceBE69A3c4Ef28f7978bc5951064772f8"
 }
@@ -53,7 +53,7 @@ Content-Type: application/json
 x-api-key: YOUR_API_KEY
 
 {
-  "challengeId": "challenge-simple-nft-example"
+  "challengeId": "challenge-tokenization"
 }
 ```
 
