@@ -17,6 +17,17 @@ const config: HardhatUserConfig = {
           },
         },
       },
+      {
+        version: "0.8.27",
+        settings: {
+          viaIR: true,
+          optimizer: {
+            enabled: true,
+            // https://docs.soliditylang.org/en/latest/using-the-compiler.html#optimizer-options
+            runs: 200,
+          },
+        },
+      },
     ],
   },
 };

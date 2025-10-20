@@ -884,6 +884,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@zk-kit/lean-imt.sol@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@zk-kit/lean-imt.sol@npm:2.0.1"
+  dependencies:
+    poseidon-solidity: 0.0.5
+  checksum: 1ebd5e099e9f010110b2711f755b11ed332d5fe40dac082fce8d726109f7ae888a1a648319eaa6251e18bc02e5c98ab9831c86c03cad835cb7248c334919755f
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:^3.0.0":
   version: 3.0.1
   resolution: "abbrev@npm:3.0.1"
@@ -3339,6 +3348,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"poseidon-solidity@npm:0.0.5":
+  version: 0.0.5
+  resolution: "poseidon-solidity@npm:0.0.5"
+  checksum: eb2d84962505a3c8a5756752c8e571ad32f90f4d95fafaffbd03552abfa040553945990d96d0243ddd993d6c2e456a816435c97739610a4f6aabb9249ebf47d7
+  languageName: node
+  linkType: hard
+
 "prettier@npm:^2.3.1":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
@@ -3508,6 +3524,7 @@ __metadata:
     "@openzeppelin/contracts": ~5.0.2
     "@types/chai": ^5.2.2
     "@types/mocha": ~10.0.8
+    "@zk-kit/lean-imt.sol": ^2.0.1
     axios: ^0.24.0
     body-parser: ^1.19.1
     chai: ^4.5.0
