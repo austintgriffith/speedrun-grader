@@ -86,6 +86,7 @@ const challenges = {
     contractName: "Voting",
     testName: "Voting.ts",
     telegram: "https://t.me/+dkPzMUauQpY5N2My",
+    requiredInitialContracts: ["mocks/VerifierMock.sol", "Verifier.sol"],
     successMessage:
       "<p>You have successfully passed the ZK Voting Challenge! Great work!</p><p>--</p>",
   },
