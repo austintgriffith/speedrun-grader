@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@zk-kit/lean-imt.sol": "^2.0.1",
     "axios": "^0.24.0",
     "body-parser": "^1.19.1",
     "cors": "^2.8.5",

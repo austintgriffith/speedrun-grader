@@ -101,6 +101,13 @@ async function downloadFile(url, destinationPath) {
   }
 
   const content = await response.text();
+
+  // Ensure the destination directory exists
+  const destinationDir = path.dirname(destinationPath);
+  if (!fs.existsSync(destinationDir)) {
+    fs.mkdirSync(destinationDir, { recursive: true });
+  }
+
   fs.writeFileSync(destinationPath, content);
 }
 

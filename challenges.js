@@ -80,6 +80,16 @@ const challenges = {
     successMessage:
       "<p>You have successfully passed the Stablecoins Challenge! Great work!</p><p>--</p>",
   },
+  "challenge-zk-voting": {
+    name: "challenge-zk-voting",
+    github: "https://github.com/scaffold-eth/se-2-challenges.git",
+    contractName: "Voting",
+    testName: "Voting.ts",
+    telegram: "https://t.me/+dkPzMUauQpY5N2My",
+    requiredInitialContracts: ["mocks/VerifierMock.sol", "Verifier.sol"],
+    successMessage:
+      "<p>You have successfully passed the ZK Voting Challenge! Great work!</p><p>--</p>",
+  },
 };
 
 module.exports = challenges;
