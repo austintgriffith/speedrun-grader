@@ -6,8 +6,8 @@ const challenges = {
     testName: "YourCollectible.ts",
     telegram: "https://t.me/+Y2vqXZZ_pEFhMGMx",
   },
-  "challenge-decentralized-staking": {
-    name: "challenge-decentralized-staking",
+  "challenge-crowdfunding": {
+    name: "challenge-crowdfunding",
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
     contractName: "Staker",
     requiredInitialContracts: ["ExampleExternalContract.sol"],
