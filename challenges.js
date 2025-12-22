@@ -9,9 +9,9 @@ const challenges = {
   "challenge-crowdfunding": {
     name: "challenge-crowdfunding",
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
-    contractName: "Staker",
+    contractName: "CrowdFund",
     requiredInitialContracts: ["ExampleExternalContract.sol"],
-    testName: "Staker.ts",
+    testName: "CrowdFund.ts",
     telegram: "https://t.me/joinchat/E6r91UFt4oMJlt01",
   },
   "challenge-token-vendor": {
