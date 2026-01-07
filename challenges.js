@@ -6,12 +6,12 @@ const challenges = {
     testName: "YourCollectible.ts",
     telegram: "https://t.me/+Y2vqXZZ_pEFhMGMx",
   },
-  "challenge-decentralized-staking": {
-    name: "challenge-decentralized-staking",
+  "challenge-crowdfunding": {
+    name: "challenge-crowdfunding",
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
-    contractName: "Staker",
-    requiredInitialContracts: ["ExampleExternalContract.sol"],
-    testName: "Staker.ts",
+    contractName: "CrowdFund",
+    requiredInitialContracts: ["FundingRecipient.sol"],
+    testName: "CrowdFund.ts",
     telegram: "https://t.me/joinchat/E6r91UFt4oMJlt01",
   },
   "challenge-token-vendor": {
