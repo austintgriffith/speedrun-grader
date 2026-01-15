@@ -93,13 +93,10 @@ const challenges = {
   "challenge-oracles": {
     name: "challenge-oracles",
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
-    contractName: "01_Staking/StakingOracle",
-    testName: "StakingOracle.ts",
+    contractName: "OptimisticOracle",
+    testName: "OptimisticOracle.ts",
     telegram: "https://t.me/+AkmcMB3jC3A0NDcx",
-    requiredInitialContracts: [
-      "01_Staking/OracleToken.sol",
-      "utils/StatisticsUtils.sol",
-    ],
+    requiredInitialContracts: ["Decider.sol"],
     successMessage:
       "<p>You have successfully passed the Oracles Challenge! Great work!</p><p>--</p>",
   },
