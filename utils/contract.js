@@ -29,6 +29,7 @@ const copyContractFromEtherscan = async (
   const contractName = challenges[challengeId].contractName;
 
   let sourceCodeParsed;
+  let contractPath = null;
   try {
     const response = await axios.get(
       getContractCodeUrl(chain.chainid, address)
@@ -59,9 +60,22 @@ const copyContractFromEtherscan = async (
         // Remove the initial and final { }
         const validJson = JSON.parse(sourceCode.substring(1).slice(0, -1));
 
+        // Try multiple possible paths for the contract
         sourceCodeParsed =
           validJson?.sources[`contracts/${contractName}.sol`]?.content ??
           validJson?.sources[`./contracts/${contractName}.sol`]?.content;
+
+        // If not found in standard paths, search through all sources for the contract
+        if (!sourceCodeParsed && validJson?.sources) {
+          for (const [path, source] of Object.entries(validJson.sources)) {
+            if (path.endsWith(`${contractName}.sol`)) {
+              sourceCodeParsed = source.content;
+              contractPath = path;
+              console.log(`Found contract at path: ${path}`);
+              break;
+            }
+          }
+        }
       } else {
         // Option 1. A string
         sourceCodeParsed = sourceCode;
@@ -74,12 +88,31 @@ const copyContractFromEtherscan = async (
       );
     }
 
-    await fs.writeFileSync(
-      `hardhat/contracts/download-${address}.sol`,
-      sourceCodeParsed
-    );
+    // Determine the file path to write to
+    let filePath = `hardhat/contracts/download-${address}.sol`;
 
-    return true;
+    // If contractPath is found and it's not just in /contracts/, preserve the directory structure
+    if (contractPath && !contractPath.match(/^\.?\/?contracts\/[^\/]+\.sol$/)) {
+      // Extract the path relative to contracts/
+      const pathMatch = contractPath.match(/contracts\/(.+)/);
+      if (pathMatch) {
+        const relativePath = pathMatch[1];
+        filePath = `hardhat/contracts/${relativePath.replace(
+          `${contractName}.sol`,
+          `download-${address}.sol`
+        )}`;
+
+        // Create the directory structure if it doesn't exist
+        const dirPath = filePath.substring(0, filePath.lastIndexOf("/"));
+        if (!fs.existsSync(dirPath)) {
+          fs.mkdirSync(dirPath, { recursive: true });
+        }
+      }
+    }
+
+    await fs.writeFileSync(filePath, sourceCodeParsed);
+
+    return filePath;
   } catch (e) {
     // Issue with the Request.
     console.error(e);
@@ -88,7 +121,12 @@ const copyContractFromEtherscan = async (
 };
 
 // Run tests for a remote {address} contract, for a {challenge} in {blockExplorer}.
-const testChallenge = async ({ challenge, blockExplorer, address }) => {
+const testChallenge = async ({
+  challenge,
+  blockExplorer,
+  address,
+  filePath,
+}) => {
   const result = {
     challenge: challenge.name,
     blockExplorer,
@@ -116,8 +154,8 @@ const testChallenge = async ({ challenge, blockExplorer, address }) => {
   }
 
   // Delete files. Don't need to await.
-  exec(`rm -f hardhat/contracts/download-${address}.sol`);
-  exec(`rm -rf hardhat/artifacts/contracts/download-${address}.sol`);
+  exec(`rm -f ${filePath}`);
+  exec(`rm -rf hardhat/artifacts/${filePath.replace("hardhat/", "")}`);
   exec(`rm -f hardhat/cache/solidity-files-cache.json`);
 
   return result;
@@ -133,8 +171,13 @@ const downloadAndTestContract = async (challengeId, blockExplorer, address) => {
   }
 
   console.log(`📡 Downloading contract from ${blockExplorer}`);
+  let filePath;
   try {
-    await copyContractFromEtherscan(blockExplorer, address, challengeId);
+    filePath = await copyContractFromEtherscan(
+      blockExplorer,
+      address,
+      challengeId
+    );
   } catch (e) {
     throw e;
   }
@@ -143,7 +186,7 @@ const downloadAndTestContract = async (challengeId, blockExplorer, address) => {
 
   // To avoid case sensitive conflicts.
   address = address.toLowerCase();
-  return await testChallenge({ challenge, blockExplorer, address });
+  return await testChallenge({ challenge, blockExplorer, address, filePath });
 };
 
 module.exports = {
