@@ -90,6 +90,16 @@ const challenges = {
     successMessage:
       "<p>You have successfully passed the ZK Voting Challenge! Great work!</p><p>--</p>",
   },
+  "challenge-oracles": {
+    name: "challenge-oracles",
+    github: "https://github.com/scaffold-eth/se-2-challenges.git",
+    contractName: "OptimisticOracle",
+    testName: "OptimisticOracle.ts",
+    telegram: "https://t.me/+AkmcMB3jC3A0NDcx",
+    requiredInitialContracts: ["Decider.sol"],
+    successMessage:
+      "<p>You have successfully passed the Oracles Challenge! Great work!</p><p>--</p>",
+  },
 };
 
 module.exports = challenges;
