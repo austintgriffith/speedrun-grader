@@ -93,7 +93,7 @@ const challenges = {
   "challenge-oracles": {
     name: "challenge-oracles",
     github: "https://github.com/scaffold-eth/se-2-challenges.git",
-    contractName: "StakingOracle",
+    contractName: "01_Staking/StakingOracle",
     testName: "StakingOracle.ts",
     telegram: "https://t.me/+AkmcMB3jC3A0NDcx",
     requiredInitialContracts: [

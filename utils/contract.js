@@ -29,7 +29,6 @@ const copyContractFromEtherscan = async (
   const contractName = challenges[challengeId].contractName;
 
   let sourceCodeParsed;
-  let contractPath = null;
   try {
     const response = await axios.get(
       getContractCodeUrl(chain.chainid, address)
@@ -64,18 +63,6 @@ const copyContractFromEtherscan = async (
         sourceCodeParsed =
           validJson?.sources[`contracts/${contractName}.sol`]?.content ??
           validJson?.sources[`./contracts/${contractName}.sol`]?.content;
-
-        // If not found in standard paths, search through all sources for the contract
-        if (!sourceCodeParsed && validJson?.sources) {
-          for (const [path, source] of Object.entries(validJson.sources)) {
-            if (path.endsWith(`${contractName}.sol`)) {
-              sourceCodeParsed = source.content;
-              contractPath = path;
-              console.log(`Found contract at path: ${path}`);
-              break;
-            }
-          }
-        }
       } else {
         // Option 1. A string
         sourceCodeParsed = sourceCode;
@@ -91,22 +78,22 @@ const copyContractFromEtherscan = async (
     // Determine the file path to write to
     let filePath = `hardhat/contracts/download-${address}.sol`;
 
-    // If contractPath is found and it's not just in /contracts/, preserve the directory structure
-    if (contractPath && !contractPath.match(/^\.?\/?contracts\/[^\/]+\.sol$/)) {
-      // Extract the path relative to contracts/
-      const pathMatch = contractPath.match(/contracts\/(.+)/);
-      if (pathMatch) {
-        const relativePath = pathMatch[1];
-        filePath = `hardhat/contracts/${relativePath.replace(
-          `${contractName}.sol`,
-          `download-${address}.sol`
-        )}`;
+    // If contractName contains a folder structure (e.g., "01_Staking/StakingOracle"), preserve it
+    if (contractName && contractName.includes("/")) {
+      // Extract just the contract file name (last part after /)
+      const contractFileName = contractName.split("/").pop();
+      // Extract the folder path
+      const folderPath = contractName.substring(
+        0,
+        contractName.lastIndexOf("/")
+      );
 
-        // Create the directory structure if it doesn't exist
-        const dirPath = filePath.substring(0, filePath.lastIndexOf("/"));
-        if (!fs.existsSync(dirPath)) {
-          fs.mkdirSync(dirPath, { recursive: true });
-        }
+      filePath = `hardhat/contracts/${folderPath}/download-${address}.sol`;
+
+      // Create the directory structure if it doesn't exist
+      const dirPath = filePath.substring(0, filePath.lastIndexOf("/"));
+      if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
       }
     }
 
