@@ -59,7 +59,6 @@ const copyContractFromEtherscan = async (
         // Remove the initial and final { }
         const validJson = JSON.parse(sourceCode.substring(1).slice(0, -1));
 
-        // Try multiple possible paths for the contract
         sourceCodeParsed =
           validJson?.sources[`contracts/${contractName}.sol`]?.content ??
           validJson?.sources[`./contracts/${contractName}.sol`]?.content;
