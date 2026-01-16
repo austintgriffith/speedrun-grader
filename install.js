@@ -188,7 +188,6 @@ async function downloadAllTestFiles(options = {}) {
 
       for (const contractFile of challengeData.requiredInitialContracts) {
         try {
-          // remove
           // Construct the contract file path in the repo
           const contractRepoFilePath = `extension/packages/hardhat/contracts/${contractFile}`;
 
@@ -199,13 +198,8 @@ async function downloadAllTestFiles(options = {}) {
             challengeData.name
           );
 
-          // remove possible folders from the path from contractFile
-          const contractFileName = contractFile.split("/").pop();
           // Destination file path for the contract
-          const contractDestinationPath = path.join(
-            contractsDir,
-            contractFileName
-          );
+          const contractDestinationPath = path.join(contractsDir, contractFile);
 
           console.log(`\tContract From: ${contractDownloadUrl}`);
           console.log(`\tContract To: ${contractDestinationPath}`);
