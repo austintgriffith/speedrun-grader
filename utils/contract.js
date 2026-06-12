@@ -49,19 +49,32 @@ const copyContractFromEtherscan = async (
       );
     }
 
+    // Verified multi-file sources key the contract differently per toolchain:
+    // Hardhat 2 uses "contracts/<name>.sol", Hardhat 3's verify prefixes with
+    // "project/contracts/<name>.sol". Match it regardless of prefix.
+    const findSource = (sources) => {
+      if (!sources) return undefined;
+      const suffix = `contracts/${contractName}.sol`;
+      const key = Object.keys(sources).find(
+        (k) => k === suffix || k.endsWith(`/${suffix}`)
+      );
+      return key
+        ? sources[key]?.content
+        : sources[`${contractName}.sol`]?.content;
+    };
+
     try {
-      // Option 3. A valid JSON
+      // Option 3. A valid JSON (standard-json input, or a flat file map)
       const parsedJson = JSON.parse(sourceCode);
-      sourceCodeParsed = parsedJson?.[`${contractName}.sol`]?.content;
+      sourceCodeParsed =
+        findSource(parsedJson.sources) ??
+        parsedJson?.[`${contractName}.sol`]?.content;
     } catch (e) {
       if (sourceCode.slice(0, 1) === "{") {
-        // Option 2. An almost valid JSON
+        // Option 2. An almost valid JSON ({{ ... }})
         // Remove the initial and final { }
         const validJson = JSON.parse(sourceCode.substring(1).slice(0, -1));
-
-        sourceCodeParsed =
-          validJson?.sources[`contracts/${contractName}.sol`]?.content ??
-          validJson?.sources[`./contracts/${contractName}.sol`]?.content;
+        sourceCodeParsed = findSource(validJson.sources);
       } else {
         // Option 1. A string
         sourceCodeParsed = sourceCode;
